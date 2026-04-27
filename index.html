@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CUBE App — Variable Token Library</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fafafa;
+    --surface: #fff;
+    --text-primary: #000;
+    --text-secondary: #373737;
+    --text-tertiary: #5c5c5c;
+    --text-muted: #898989;
+    --border: #e7e7e7;
+    --border-strong: #d9d9d9;
+    --radius: 12px;
+    --radius-sm: 8px;
+    --radius-xs: 4px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- NAV ---- */
+  .topbar {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+  }
+  .topbar-inner {
+    max-width: 1280px; margin: 0 auto;
+    display: flex; align-items: center; gap: 24px;
+    height: 56px; overflow-x: auto;
+  }
+  .topbar h1 {
+    font-size: 15px; font-weight: 700; white-space: nowrap;
+    letter-spacing: -0.01em;
+  }
+  .topbar h1 span { color: var(--text-muted); font-weight: 400; margin-left: 6px; }
+  .nav-pills { display: flex; gap: 4px; margin-left: auto; }
+  .nav-pills a {
+    padding: 6px 14px; border-radius: 99px; font-size: 13px; font-weight: 500;
+    text-decoration: none; color: var(--text-tertiary); white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .nav-pills a:hover { background: #f0f0f0; color: var(--text-primary); }
+  .nav-pills a.active { background: var(--text-primary); color: #fff; }
+
+  /* ---- HERO ---- */
+  .hero {
+    max-width: 1280px; margin: 0 auto;
+    padding: 48px 32px 32px;
+  }
+  .hero h2 { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+  .hero p { color: var(--text-tertiary); margin-top: 8px; font-size: 15px; max-width: 620px; }
+
+  .stats {
+    display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap;
+  }
+  .stat {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); padding: 16px 20px;
+    min-width: 140px;
+  }
+  .stat-value { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; }
+  .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+  /* ---- LAYOUT ---- */
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 32px 64px; }
+
+  .section { margin-top: 48px; }
+  .section-header {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 20px; border-bottom: 1px solid var(--border);
+    padding-bottom: 12px;
+  }
+  .section-header h3 { font-size: 18px; font-weight: 700; }
+  .section-header .badge {
+    font-size: 11px; font-weight: 600; background: #f0f0f0;
+    padding: 3px 10px; border-radius: 99px; color: var(--text-tertiary);
+  }
+
+  /* ---- COLOR PALETTE GRID ---- */
+  .palette-group { margin-bottom: 32px; }
+  .palette-group-title {
+    font-size: 13px; font-weight: 600; color: var(--text-tertiary);
+    margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .palette {
+    display: flex; gap: 0; border-radius: var(--radius); overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .swatch {
+    flex: 1; min-width: 0; position: relative; cursor: pointer;
+    transition: transform 0.15s, z-index 0s;
+  }
+  .swatch:hover { transform: scaleY(1.08); z-index: 2; }
+  .swatch-color { height: 64px; }
+  .swatch-info {
+    padding: 8px 6px; background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+  .swatch-name { font-size: 10px; font-weight: 600; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .swatch-hex { font-size: 10px; color: var(--text-muted); font-family: "SF Mono", "Fira Code", monospace; }
+  .swatch.star .swatch-name::after { content: " ★"; color: #D56C00; }
+
+  /* ---- TRANSLUCENT ---- */
+  .translucent-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+  .trans-card {
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+  .trans-preview {
+    height: 56px; position: relative;
+    background-image:
+      linear-gradient(45deg, #ccc 25%, transparent 25%),
+      linear-gradient(-45deg, #ccc 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #ccc 75%),
+      linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 12px 12px;
+    background-position: 0 0, 0 6px, 6px -6px, -6px 0px;
+  }
+  .trans-overlay { width: 100%; height: 100%; }
+  .trans-info { padding: 10px 12px; background: var(--surface); }
+  .trans-name { font-size: 12px; font-weight: 600; }
+  .trans-rgba { font-size: 11px; color: var(--text-muted); font-family: monospace; }
+
+  /* ---- SEMANTIC TABLE ---- */
+  .semantic-group { margin-bottom: 28px; }
+  .semantic-group-title {
+    font-size: 13px; font-weight: 600; color: var(--text-tertiary);
+    margin-bottom: 10px;
+  }
+  .sem-table {
+    width: 100%; border-collapse: collapse; table-layout: fixed;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); overflow: hidden;
+    font-size: 13px;
+  }
+  .sem-table th {
+    text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 600;
+    color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border); background: #efefef;
+  }
+  .sem-table th:nth-child(1) { width: 38%; }
+  .sem-table th:nth-child(2) { width: 20%; }
+  .sem-table th:nth-child(3) { width: 20%; }
+  .sem-table th:nth-child(4) { width: 22%; }
+  .sem-table td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sem-table td {
+    padding: 8px 14px; border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .sem-table tr:last-child td { border-bottom: none; }
+  .sem-table .color-dot {
+    display: inline-block; width: 16px; height: 16px;
+    border-radius: 4px; vertical-align: middle; margin-right: 8px;
+    border: 1px solid rgba(0,0,0,0.08);
+  }
+  .sem-table .var-name { font-family: monospace; font-weight: 600; font-size: 12px; }
+  .sem-table .alias { color: var(--text-muted); font-size: 12px; }
+  .sem-table .usage { color: var(--text-tertiary); font-size: 12px; }
+
+  /* ---- SCALE VISUALIZER (Spacing / Radius / Size) ---- */
+  .scale-grid {
+    display: grid; grid-template-columns: 1fr; gap: 0;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); overflow: hidden;
+  }
+  .scale-row {
+    display: grid; grid-template-columns: 140px 1fr 80px 80px;
+    align-items: center; gap: 0;
+    padding: 0 16px; height: 48px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .scale-row:last-child { border-bottom: none; }
+  .scale-row.header {
+    font-size: 11px; font-weight: 600; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.04em;
+    height: 40px; background: #fafafa;
+  }
+  .scale-name { font-family: monospace; font-weight: 600; font-size: 12px; }
+  .scale-bar-wrap { padding-right: 24px; }
+  .scale-bar {
+    height: 20px; border-radius: 4px;
+    transition: width 0.3s ease;
+  }
+  .scale-val {
+    font-family: monospace; font-size: 12px; color: var(--text-tertiary);
+    text-align: right;
+  }
+  .scale-diff { color: #B25700; font-size: 11px; }
+
+  /* ---- TYPOGRAPHY ---- */
+  .typo-table {
+    width: 100%; border-collapse: collapse;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-sm); overflow: hidden;
+  }
+  .typo-table th {
+    text-align: left; padding: 10px 14px; font-size: 11px; font-weight: 600;
+    color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border); background: #fafafa;
+  }
+  .typo-table td {
+    padding: 10px 14px; border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+  }
+  .typo-table tr:last-child td { border-bottom: none; }
+  .typo-name { font-family: monospace; font-weight: 600; font-size: 12px; }
+  .typo-preview { color: var(--text-secondary); white-space: nowrap; }
+  .typo-val { font-family: monospace; font-size: 12px; color: var(--text-tertiary); text-align: center; }
+
+  /* ---- MODE TOGGLE ---- */
+  .mode-toggle {
+    display: inline-flex; background: #f0f0f0; border-radius: 99px;
+    padding: 3px; gap: 2px; margin-bottom: 16px;
+  }
+  .mode-toggle button {
+    padding: 5px 16px; border: none; border-radius: 99px;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    background: transparent; color: var(--text-tertiary);
+    transition: all 0.15s;
+  }
+  .mode-toggle button.active {
+    background: #fff; color: var(--text-primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  /* ---- ARCHITECTURE DIAGRAM ---- */
+  .arch-diagram {
+    display: flex; align-items: center; gap: 20px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 24px 28px;
+    margin-top: 24px; flex-wrap: wrap;
+  }
+  .arch-box {
+    padding: 16px 20px; border-radius: var(--radius-sm);
+    border: 2px solid; min-width: 180px; text-align: center;
+  }
+  .arch-box h4 { font-size: 13px; font-weight: 700; }
+  .arch-box p { font-size: 11px; margin-top: 4px; }
+  .arch-arrow { font-size: 20px; color: var(--text-muted); flex-shrink: 0; }
+
+  /* ---- COPY TOAST ---- */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: rgba(0,0,0,0.82); color: #fff; padding: 10px 20px;
+    border-radius: 99px; font-size: 13px; font-weight: 500;
+    opacity: 0; transition: all 0.25s; pointer-events: none; z-index: 999;
+    backdrop-filter: blur(8px);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ---- RESPONSIVE ---- */
+  @media (max-width: 768px) {
+    .topbar { padding: 0 16px; }
+    .hero { padding: 32px 16px 24px; }
+    .container { padding: 0 16px 48px; }
+    .scale-row { grid-template-columns: 110px 1fr 60px 60px; padding: 0 12px; }
+    .palette .swatch-info { padding: 6px 4px; }
+    .swatch-color { height: 48px; }
+  }
+</style>
+<style>
+  #lock-screen {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #F5F5F5;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0;
+  }
+  #lock-screen.hidden { display: none; }
+  .lock-hero {
+    display: flex; flex-direction: column; align-items: center;
+    margin-bottom: 40px;
+  }
+  .lock-cube-logo {
+    margin-bottom: 20px;
+  }
+  .lock-brand {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.12em;
+    color: #898989; text-transform: uppercase;
+  }
+  .lock-card {
+    background: #FFFFFF;
+    border: 1px solid #E7E7E7;
+    border-radius: 20px;
+    padding: 40px 36px;
+    width: 360px;
+    text-align: center;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+  .lock-title {
+    color: #000; font-size: 18px; font-weight: 600; margin-bottom: 6px;
+  }
+  .lock-subtitle {
+    color: #898989; font-size: 13px; margin-bottom: 28px;
+  }
+  .lock-input {
+    width: 100%; padding: 12px 16px;
+    background: #F5F5F5;
+    border: 1.5px solid #D9D9D9;
+    border-radius: 10px;
+    color: #000; font-size: 15px; outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+  }
+  .lock-input:focus { border-color: #1D9C58; background: #fff; }
+  .lock-input.error { border-color: #EC5555; animation: shake 0.3s ease; }
+  .lock-input::placeholder { color: #BDBDBD; }
+  .lock-btn {
+    width: 100%; padding: 12px;
+    background: #02293D; border: none; border-radius: 10px;
+    color: #fff; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .lock-btn:hover { background: #076193; }
+  .lock-error {
+    color: #EC5555; font-size: 12px; margin-top: 10px;
+    min-height: 16px;
+  }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
+  }
+</style>
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+<div id="lock-screen">
+  <div class="lock-hero">
+    <!-- CUBE Logo -->
+    <div class="lock-cube-logo">
+      <img src="assets/cube-logo.svg" width="40" height="58" alt="CUBE Logo" />
+    </div>
+    <div class="lock-brand">Design System · Token Library</div>
+  </div>
+  <div class="lock-card">
+    <div class="lock-title">歡迎回來</div>
+    <div class="lock-subtitle">請輸入密碼以進入</div>
+    <input id="lock-input" class="lock-input" type="password" placeholder="Password" autocomplete="off" />
+    <button class="lock-btn" onclick="checkPassword()">進入</button>
+    <div class="lock-error" id="lock-error"></div>
+  </div>
+</div>
+
+<script>
+  const _H = '85b70e44866c8837bdc27047871cc05c367c160f3400cec02b2e1b5747102471';
+  document.getElementById('lock-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPassword();
+  });
+  async function checkPassword() {
+    const input = document.getElementById('lock-input');
+    const encoded = new TextEncoder().encode(input.value);
+    const buf = await crypto.subtle.digest('SHA-256', encoded);
+    const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+    if (hash === _H) {
+      document.getElementById('lock-screen').classList.add('hidden');
+    } else {
+      input.classList.add('error');
+      document.getElementById('lock-error').textContent = '密碼錯誤，請再試一次';
+      setTimeout(() => input.classList.remove('error'), 400);
+      input.value = '';
+    }
+  }
+</script>
+
+<!-- NAV -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <h1>CUBE Token Library <span>201 Variables</span></h1>
+    <nav class="nav-pills">
+      <a href="#primitive" class="active" data-nav>Primitive</a>
+      <a href="#semantic" data-nav>Semantic</a>
+      <a href="#spacing" data-nav>Spacing</a>
+      <a href="#radius" data-nav>Radius</a>
+      <a href="#size" data-nav>Size</a>
+      <a href="#typography" data-nav>Typography</a>
+    </nav>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <h2>Figma Variable Token Library</h2>
+  <p>CUBE Design System 的雙層 Token 架構 — Primitive 原始色階 + Semantic 語意引用。所有 Collection 含 iOS / Android 雙 Mode。</p>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-value">6</div><div class="stat-label">Collections</div></div>
+    <div class="stat"><div class="stat-value">201</div><div class="stat-label">Variables</div></div>
+    <div class="stat"><div class="stat-value">2</div><div class="stat-label">Modes (iOS / Android)</div></div>
+    <div class="stat"><div class="stat-value">76</div><div class="stat-label">Primitive Colors</div></div>
+    <div class="stat"><div class="stat-value">72</div><div class="stat-label">Semantic Aliases</div></div>
+  </div>
+
+  <div class="arch-diagram">
+    <div class="arch-box" style="border-color: #0C76B0; background: #E9F6FE;">
+      <h4 style="color: #0C76B0;">Semantic Layer</h4>
+      <p>color/bg/primary<br>color/text/secondary<br>color/func/success</p>
+    </div>
+    <div class="arch-arrow">&#8594; alias &#8594;</div>
+    <div class="arch-box" style="border-color: #5E66CC; background: #F3F4FF;">
+      <h4 style="color: #5E66CC;">Primitive Layer</h4>
+      <p>gray/0 = #FFFFFF<br>green/600 = #0F8144<br>blue/600 = #0C76B0</p>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ==================== PRIMITIVE ==================== -->
+  <section class="section" id="primitive">
+    <div class="section-header">
+      <h3>Collection 1 — Color / Primitive</h3>
+      <span class="badge">76 variables</span>
+    </div>
+
+    <!-- Interface -->
+    <div class="palette-group">
+      <div class="palette-group-title">Interface</div>
+      <div class="palette" style="max-width: 240px;">
+        <div class="swatch" onclick="copyHex('#FFFFFF')">
+          <div class="swatch-color" style="background:#FFFFFF; border: 1px solid #e7e7e7;"></div>
+          <div class="swatch-info"><div class="swatch-name">light</div><div class="swatch-hex">#FFFFFF</div></div>
+        </div>
+        <div class="swatch" onclick="copyHex('#000000')">
+          <div class="swatch-color" style="background:#000000;"></div>
+          <div class="swatch-info"><div class="swatch-name">dark</div><div class="swatch-hex">#000000</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gray -->
+    <div class="palette-group">
+      <div class="palette-group-title">Gray &mdash; 13 steps &nbsp;(&#9733; 500)</div>
+      <div class="palette" id="gray-palette"></div>
+    </div>
+
+    <!-- Green -->
+    <div class="palette-group">
+      <div class="palette-group-title">Green &mdash; 11 steps &nbsp;(&#9733; 600)</div>
+      <div class="palette" id="green-palette"></div>
+    </div>
+
+    <!-- Blue -->
+    <div class="palette-group">
+      <div class="palette-group-title">Blue &mdash; 11 steps &nbsp;(&#9733; 600)</div>
+      <div class="palette" id="blue-palette"></div>
+    </div>
+
+    <!-- Purple -->
+    <div class="palette-group">
+      <div class="palette-group-title">Purple &mdash; 11 steps &nbsp;(&#9733; 600)</div>
+      <div class="palette" id="purple-palette"></div>
+    </div>
+
+    <!-- Red -->
+    <div class="palette-group">
+      <div class="palette-group-title">Red &mdash; 11 steps &nbsp;(&#9733; 600)</div>
+      <div class="palette" id="red-palette"></div>
+    </div>
+
+    <!-- Orange -->
+    <div class="palette-group">
+      <div class="palette-group-title">Orange &mdash; 11 steps &nbsp;(&#9733; 600)</div>
+      <div class="palette" id="orange-palette"></div>
+    </div>
+
+    <!-- Translucent -->
+    <div class="palette-group">
+      <div class="palette-group-title">Translucent</div>
+      <div class="translucent-grid" id="translucent-grid"></div>
+    </div>
+
+    <!-- AI -->
+    <div class="palette-group">
+      <div class="palette-group-title">AI / Dialog</div>
+      <div class="palette" style="max-width: 160px;">
+        <div class="swatch" onclick="copyHex('#E6EEF4')">
+          <div class="swatch-color" style="background:#E6EEF4;"></div>
+          <div class="swatch-info"><div class="swatch-name">pale-blue</div><div class="swatch-hex">#E6EEF4</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SEMANTIC ==================== -->
+  <section class="section" id="semantic">
+    <div class="section-header">
+      <h3>Collection 2 — Color / Semantic</h3>
+      <span class="badge">68 aliases</span>
+    </div>
+
+    <div id="semantic-tables"></div>
+  </section>
+
+  <!-- ==================== SPACING ==================== -->
+  <section class="section" id="spacing">
+    <div class="section-header">
+      <h3>Collection 3 — Spacing</h3>
+      <span class="badge">12 variables</span>
+    </div>
+    <div class="mode-toggle" data-target="spacing">
+      <button class="active" data-mode="ios">iOS</button>
+      <button data-mode="android">Android</button>
+    </div>
+    <div class="scale-grid" id="spacing-grid"></div>
+  </section>
+
+  <!-- ==================== RADIUS ==================== -->
+  <section class="section" id="radius">
+    <div class="section-header">
+      <h3>Collection 4 — Radius</h3>
+      <span class="badge">8 variables</span>
+    </div>
+    <div class="mode-toggle" data-target="radius">
+      <button class="active" data-mode="ios">iOS</button>
+      <button data-mode="android">Android</button>
+    </div>
+    <div class="scale-grid" id="radius-grid"></div>
+  </section>
+
+  <!-- ==================== SIZE ==================== -->
+  <section class="section" id="size">
+    <div class="section-header">
+      <h3>Collection 5 — Size</h3>
+      <span class="badge">20 variables</span>
+    </div>
+    <div class="mode-toggle" data-target="size">
+      <button class="active" data-mode="ios">iOS</button>
+      <button data-mode="android">Android</button>
+    </div>
+    <div class="scale-grid" id="size-grid"></div>
+  </section>
+
+  <!-- ==================== TYPOGRAPHY ==================== -->
+  <section class="section" id="typography">
+    <div class="section-header">
+      <h3>Collection 6 — Typography</h3>
+      <span class="badge">24 variables</span>
+    </div>
+    <div class="mode-toggle" data-target="typo">
+      <button class="active" data-mode="ios">iOS</button>
+      <button data-mode="android">Android</button>
+    </div>
+    <table class="typo-table" id="typo-table"></table>
+  </section>
+
+</div>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+// =============== DATA ===============
+
+const GRAY = [
+  { step: "0",    hex: "#FFFFFF" },
+  { step: "100",  hex: "#F5F5F5" },
+  { step: "150",  hex: "#E7E7E7" },
+  { step: "200",  hex: "#D9D9D9" },
+  { step: "300",  hex: "#BDBDBD" },
+  { step: "400",  hex: "#A3A3A3" },
+  { step: "500",  hex: "#898989", star: true },
+  { step: "600",  hex: "#707070" },
+  { step: "700",  hex: "#5C5C5C" },
+  { step: "800",  hex: "#494949" },
+  { step: "900",  hex: "#373737" },
+  { step: "1000", hex: "#262626" },
+  { step: "1100", hex: "#000000" },
+];
+
+const GREEN = [
+  { step:"100",hex:"#E9F8F0" },{ step:"150",hex:"#CBEFDC" },{ step:"200",hex:"#ADE6C7" },
+  { step:"300",hex:"#6ED09B" },{ step:"400",hex:"#3BB875" },{ step:"500",hex:"#1D9C58" },
+  { step:"600",hex:"#0F8144",star:true },{ step:"700",hex:"#0A6A36" },{ step:"800",hex:"#06542A" },
+  { step:"900",hex:"#044020" },{ step:"1000",hex:"#032C16" },
+];
+
+const BLUE = [
+  { step:"100",hex:"#E9F6FE" },{ step:"150",hex:"#CAECFF" },{ step:"200",hex:"#AAE1FF" },
+  { step:"300",hex:"#67C7FB" },{ step:"400",hex:"#35ADED" },{ step:"500",hex:"#1890D2" },
+  { step:"600",hex:"#0C76B0",star:true },{ step:"700",hex:"#076193" },{ step:"800",hex:"#044D75" },
+  { step:"900",hex:"#033A59" },{ step:"1000",hex:"#02293D" },
+];
+
+const PURPLE = [
+  { step:"100",hex:"#F3F4FF" },{ step:"150",hex:"#E3E6FF" },{ step:"200",hex:"#D3D7FF" },
+  { step:"300",hex:"#B2B8FF" },{ step:"400",hex:"#929BFE" },{ step:"500",hex:"#757EEC" },
+  { step:"600",hex:"#5E66CC",star:true },{ step:"700",hex:"#4C53AC" },{ step:"800",hex:"#3C418A" },
+  { step:"900",hex:"#2D3169" },{ step:"1000",hex:"#1F2249" },
+];
+
+const RED = [
+  { step:"100",hex:"#FDF2F2" },{ step:"150",hex:"#FCE1E1" },{ step:"200",hex:"#FACFCF" },
+  { step:"300",hex:"#F7A9A9" },{ step:"400",hex:"#F38282" },{ step:"500",hex:"#EC5555" },
+  { step:"600",hex:"#DD1B1B",star:true },{ step:"700",hex:"#BC0000" },{ step:"800",hex:"#970000" },
+  { step:"900",hex:"#750000" },{ step:"1000",hex:"#550000" },
+];
+
+const ORANGE = [
+  { step:"100",hex:"#FFF3E6" },{ step:"150",hex:"#FFE2C2" },{ step:"200",hex:"#FFD19D" },
+  { step:"300",hex:"#FFAB50" },{ step:"400",hex:"#F28815" },{ step:"500",hex:"#D56C00" },
+  { step:"600",hex:"#B25700",star:true },{ step:"700",hex:"#944600" },{ step:"800",hex:"#763700" },
+  { step:"900",hex:"#592A00" },{ step:"1000",hex:"#3F1D00" },
+];
+
+const TRANSLUCENT = [
+  { name:"card",        base:"#FFFFFF", opacity:0.75, label:"Card (Glass)",        rgba:"rgba(255,255,255,0.75)" },
+  { name:"indicator",   base:"#FFFFFF", opacity:0.80, label:"Android Indicator",   rgba:"rgba(255,255,255,0.80)" },
+  { name:"mask",      base:"#000000", opacity:0.50, label:"Mask (Overlay)", rgba:"rgba(0,0,0,0.50)" },
+  { name:"toast",     base:"#000000", opacity:0.75, label:"Toast", rgba:"rgba(0,0,0,0.75)" },
+  { name:"pressed",   base:"#000000", opacity:0.06, label:"Pressed", rgba:"rgba(0,0,0,0.06)" },
+  { name:"at-border", base:"#898989", opacity:0.10, label:"AT Border", rgba:"rgba(137,137,137,0.10)" },
+];
+
+const SEMANTIC = {
+  "Background (bg)": [
+    { name:"color/bg/primary",   lightAlias:"gray/0",       lightHex:"#FFFFFF", darkAlias:"gray/1100",    darkHex:"#000000", usage:"頁面主要背景" },
+    { name:"color/bg/secondary", lightAlias:"gray/100",     lightHex:"#F5F5F5", darkAlias:"gray/1000",    darkHex:"#262626", usage:"頁面次要背景" },
+    { name:"color/bg/ai",        lightAlias:"ai/pale-blue", lightHex:"#E6EEF4", darkAlias:"ai/pale-blue", darkHex:"#E6EEF4", usage:"AI 對話相關頁面背景" },
+  ],
+  "Surface": [
+    { name:"color/surface/brand",           lightAlias:"blue/1000",            lightHex:"#02293D", darkAlias:"blue/100",             darkHex:"#E9F6FE", usage:"品牌色（按鈕）" },
+    { name:"color/surface/primary",         lightAlias:"gray/0",               lightHex:"#FFFFFF", darkAlias:"gray/1100",            darkHex:"#000000", usage:"元件主要底色（Card、Cell 等）" },
+    { name:"color/surface/secondary",       lightAlias:"gray/100",             lightHex:"#F5F5F5", darkAlias:"gray/1000",            darkHex:"#262626", usage:"元件次要底色" },
+    { name:"color/surface/selected",        lightAlias:"green/100",            lightHex:"#E9F8F0", darkAlias:"green/900",            darkHex:"#044020", usage:"選中狀態底色（Selection, Chip 等）" },
+    { name:"color/surface/selected-strong", lightAlias:"green/500",            lightHex:"#1D9C58", darkAlias:"green/700",            darkHex:"#0A6A36", usage:"強選中狀態底色（Tab 等）" },
+    { name:"color/surface/disabled",        lightAlias:"gray/150",             lightHex:"#E7E7E7", darkAlias:"gray/900",             darkHex:"#373737", usage:"停用狀態元件底色（Button）" },
+    { name:"color/surface/disabled-subtle", lightAlias:"gray/100",             lightHex:"#F5F5F5", darkAlias:"gray/1000",            darkHex:"#262626", usage:"停用狀態元件柔和底色（Input, Selection, Chip 等）" },
+    { name:"color/surface/inverse",         lightAlias:"gray/800",             lightHex:"#494949", darkAlias:"gray/300",             darkHex:"#BDBDBD", usage:"深色元件底色（App news 等）" },
+    { name:"color/surface/elevated",        lightAlias:"translucent/white-75", lightHex:"rgba(255,255,255,0.75)", darkAlias:"translucent/white-75", darkHex:"rgba(255,255,255,0.75)", usage:"透明卡片底色" },
+    { name:"color/surface/overlay-light",   lightAlias:"translucent/black-50", lightHex:"rgba(0,0,0,0.50)", darkAlias:"translucent/black-50", darkHex:"rgba(0,0,0,0.50)", usage:"背景遮罩（Mask 等）" },
+    { name:"color/surface/overlay",         lightAlias:"translucent/black-75", lightHex:"rgba(0,0,0,0.75)",         darkAlias:"translucent/black-75", darkHex:"rgba(0,0,0,0.75)",         usage:"半透明深色浮層（Toast 等）" },
+    { name:"color/surface/indicator",       lightAlias:"translucent/white-80", lightHex:"rgba(255,255,255,0.80)", darkAlias:"translucent/white-80", darkHex:"rgba(255,255,255,0.80)", usage:"用於 Android indicator" },
+  ],
+  "Text": [
+    { name:"color/text/brand",           lightAlias:"blue/1000", lightHex:"#02293D", darkAlias:"blue/200",  darkHex:"#AAE1FF", usage:"品牌文字色" },
+    { name:"color/text/primary",         lightAlias:"gray/900",  lightHex:"#373737", darkAlias:"gray/300",  darkHex:"#BDBDBD", usage:"標題、主要文字" },
+    { name:"color/text/secondary",       lightAlias:"gray/600",  lightHex:"#707070", darkAlias:"gray/500",  darkHex:"#898989", usage:"副標題、輔助文字" },
+    { name:"color/text/placeholder",     lightAlias:"gray/600",  lightHex:"#707070", darkAlias:"gray/500",  darkHex:"#898989", usage:"搜尋框內的預設文字、安卓輸入框的預設文字" },
+    { name:"color/text/disabled",        lightAlias:"gray/400",  lightHex:"#A3A3A3", darkAlias:"gray/700",  darkHex:"#5C5C5C", usage:"停用狀態文字" },
+    { name:"color/text/disabled-subtle", lightAlias:"gray/300",  lightHex:"#BDBDBD", darkAlias:"gray/800",  darkHex:"#494949", usage:"停用狀態柔和文字（未選中的 Selection, Chip）" },
+    { name:"color/text/action",           lightAlias:"green/500", lightHex:"#1D9C58", darkAlias:"green/300", darkHex:"#6ED09B", usage:"可點擊連結文字、選中文字" },
+    { name:"color/text/highlight",        lightAlias:"green/700", lightHex:"#0A6A36", darkAlias:"green/300", darkHex:"#6ED09B", usage:"用於重點文字、游標" },
+    { name:"color/text/inverse",         lightAlias:"gray/0",    lightHex:"#FFFFFF", darkAlias:"gray/1100", darkHex:"#000000", usage:"泛用在深色底上的文字" },
+  ],
+  "Border": [
+    { name:"color/border/default",  lightAlias:"gray/500",               lightHex:"#898989", darkAlias:"gray/600",              darkHex:"#707070", usage:"元件一般狀態預設邊框" },
+    { name:"color/border/disabled", lightAlias:"gray/300",               lightHex:"#BDBDBD", darkAlias:"gray/800",              darkHex:"#494949", usage:"元件停用狀態邊框" },
+    { name:"color/border/focus",    lightAlias:"green/500",              lightHex:"#1D9C58", darkAlias:"green/300",             darkHex:"#6ED09B", usage:"元件選中狀態邊框" },
+    { name:"color/border/error",    lightAlias:"red/500",                lightHex:"#EC5555", darkAlias:"red/300",               darkHex:"#F7A9A9", usage:"元件錯誤狀態邊框" },
+    { name:"color/border/brand",    lightAlias:"blue/1000",              lightHex:"#02293D", darkAlias:"blue/200",              darkHex:"#AAE1FF", usage:"目前用於 CUBE 卡權益選中邊框" },
+    { name:"color/border/at",       lightAlias:"translucent/gray500-10", lightHex:"rgba(137,137,137,0.10)", darkAlias:"translucent/gray500-10", darkHex:"rgba(137,137,137,0.10)", usage:"AT Banner 外框" },
+    { name:"color/border/inverse",  lightAlias:"gray/0",                 lightHex:"#FFFFFF",                darkAlias:"gray/0",                 darkHex:"#FFFFFF",                usage:"泛用在深色底上的邊框" },
+  ],
+  "Divider": [
+    { name:"color/divider/primary",   lightAlias:"gray/150", lightHex:"#E7E7E7", darkAlias:"gray/900",  darkHex:"#373737", usage:"白底上使用分隔線" },
+    { name:"color/divider/secondary", lightAlias:"gray/200", lightHex:"#D9D9D9", darkAlias:"gray/800",  darkHex:"#494949", usage:"灰底上使用分隔線" },
+    { name:"color/divider/subtle",    lightAlias:"gray/100", lightHex:"#F5F5F5", darkAlias:"gray/1000", darkHex:"#262626", usage:"清單中使用分隔線" },
+  ],
+  "Icon": [
+    { name:"color/icon/indicator-primary",   lightAlias:"gray/900",  lightHex:"#373737", darkAlias:"gray/300",  darkHex:"#BDBDBD", usage:"指示型圖示主要顏色" },
+    { name:"color/icon/indicator-secondary", lightAlias:"green/400", lightHex:"#3BB875", darkAlias:"green/700", darkHex:"#0A6A36", usage:"指示型圖示次要顏色" },
+    { name:"color/icon/action-primary",      lightAlias:"gray/600",  lightHex:"#707070", darkAlias:"gray/500",  darkHex:"#898989", usage:"動作型圖示主要顏色" },
+    { name:"color/icon/action-secondary",    lightAlias:"green/500", lightHex:"#1D9C58", darkAlias:"green/300", darkHex:"#6ED09B", usage:"動作型圖示次要顏色" },
+    { name:"color/icon/action-disable",      lightAlias:"gray/400",  lightHex:"#A3A3A3", darkAlias:"gray/700",  darkHex:"#5C5C5C", usage:"動作型圖示停用狀態" },
+    { name:"color/icon/brand",               lightAlias:"blue/1000", lightHex:"#02293D", darkAlias:"blue/200",  darkHex:"#AAE1FF", usage:"品牌色圖示" },
+    { name:"color/icon/inverse",             lightAlias:"gray/0",    lightHex:"#FFFFFF", darkAlias:"gray/1100", darkHex:"#000000", usage:"深色底上的圖示" },
+  ],
+  "Functional — Positive (Green)": [
+    { name:"color/func/positive",           lightAlias:"green/700", lightHex:"#0A6A36", darkAlias:"green/300", darkHex:"#6ED09B", usage:"正面狀態文字/圖示" },
+    { name:"color/func/positive-border",    lightAlias:"green/200", lightHex:"#ADE6C7", darkAlias:"green/900", darkHex:"#044020", usage:"正面狀態邊框" },
+    { name:"color/func/positive-bg",        lightAlias:"green/150", lightHex:"#CBEFDC", darkAlias:"green/900", darkHex:"#044020", usage:"正面狀態背景" },
+    { name:"color/func/positive-bg-subtle", lightAlias:"green/100", lightHex:"#E9F8F0", darkAlias:"green/900", darkHex:"#044020", usage:"正面狀態柔和背景" },
+  ],
+  "Functional — Negative (Red)": [
+    { name:"color/func/negative",           lightAlias:"red/700", lightHex:"#BC0000", darkAlias:"red/300", darkHex:"#F7A9A9", usage:"負面狀態文字/圖示" },
+    { name:"color/func/negative-border",    lightAlias:"red/200", lightHex:"#FACFCF", darkAlias:"red/900", darkHex:"#750000", usage:"負面狀態邊框" },
+    { name:"color/func/negative-bg",        lightAlias:"red/150", lightHex:"#FCE1E1", darkAlias:"red/300", darkHex:"#F7A9A9", usage:"負面狀態背景" },
+    { name:"color/func/negative-bg-subtle", lightAlias:"red/100", lightHex:"#FDF2F2", darkAlias:"red/900", darkHex:"#750000", usage:"負面狀態柔和背景" },
+  ],
+  "Functional — Warning (Orange)": [
+    { name:"color/func/warning",           lightAlias:"orange/700", lightHex:"#944600", darkAlias:"orange/300", darkHex:"#FFAB50", usage:"警告狀態文字/圖示" },
+    { name:"color/func/warning-border",    lightAlias:"orange/200", lightHex:"#FFD19D", darkAlias:"orange/900", darkHex:"#592A00", usage:"警告狀態邊框" },
+    { name:"color/func/warning-bg",        lightAlias:"orange/150", lightHex:"#FFE2C2", darkAlias:"orange/900", darkHex:"#592A00", usage:"警告狀態背景" },
+    { name:"color/func/warning-bg-subtle", lightAlias:"orange/100", lightHex:"#FFF3E6", darkAlias:"orange/900", darkHex:"#592A00", usage:"警告狀態柔和背景" },
+  ],
+  "Functional — Promotional (Orange)": [
+    { name:"color/func/promotional",           lightAlias:"orange/700", lightHex:"#944600", darkAlias:"orange/300", darkHex:"#FFAB50", usage:"促銷資訊/推廣文字/圖示" },
+    { name:"color/func/promotional-border",    lightAlias:"orange/200", lightHex:"#FFD19D", darkAlias:"orange/900", darkHex:"#592A00", usage:"促銷資訊邊框" },
+    { name:"color/func/promotional-bg",        lightAlias:"orange/150", lightHex:"#FFE2C2", darkAlias:"orange/900", darkHex:"#592A00", usage:"促銷資訊背景" },
+    { name:"color/func/promotional-bg-subtle", lightAlias:"orange/100", lightHex:"#FFF3E6", darkAlias:"orange/900", darkHex:"#592A00", usage:"促銷資訊柔和背景" },
+  ],
+  "Functional — Neutral (Gray)": [
+    { name:"color/func/neutral",           lightAlias:"gray/700", lightHex:"#5C5C5C", darkAlias:"gray/400", darkHex:"#A3A3A3", usage:"中性狀態文字/圖示" },
+    { name:"color/func/neutral-border",    lightAlias:"gray/200", lightHex:"#D9D9D9", darkAlias:"gray/900", darkHex:"#373737", usage:"中性狀態邊框" },
+    { name:"color/func/neutral-bg",        lightAlias:"gray/150", lightHex:"#E7E7E7", darkAlias:"gray/900", darkHex:"#373737", usage:"中性狀態背景" },
+    { name:"color/func/neutral-bg-subtle", lightAlias:"gray/100", lightHex:"#F5F5F5", darkAlias:"gray/900", darkHex:"#373737", usage:"中性狀態柔和背景" },
+  ],
+  "Functional — Info (Blue)": [
+    { name:"color/func/info",           lightAlias:"blue/700", lightHex:"#076193", darkAlias:"blue/300", darkHex:"#67C7FB", usage:"資訊文字/圖示" },
+    { name:"color/func/info-border",    lightAlias:"blue/200", lightHex:"#AAE1FF", darkAlias:"blue/900", darkHex:"#033A59", usage:"資訊邊框" },
+    { name:"color/func/info-bg",        lightAlias:"blue/150", lightHex:"#CAECFF", darkAlias:"blue/900", darkHex:"#033A59", usage:"資訊背景" },
+    { name:"color/func/info-bg-subtle", lightAlias:"blue/100", lightHex:"#E9F6FE", darkAlias:"blue/900", darkHex:"#033A59", usage:"資訊柔和背景" },
+  ],
+  "Functional — Accent (Purple)": [
+    { name:"color/func/accent",        lightAlias:"purple/700", lightHex:"#4C53AC", darkAlias:"purple/300", darkHex:"#B2B8FF", usage:"Accent 文字/圖示" },
+    { name:"color/func/accent-border", lightAlias:"purple/200", lightHex:"#D3D7FF", darkAlias:"purple/900", darkHex:"#2D3169", usage:"Accent 邊框" },
+    { name:"color/func/accent-bg",        lightAlias:"purple/150", lightHex:"#E3E6FF", darkAlias:"purple/900", darkHex:"#2D3169", usage:"Accent 背景" },
+    { name:"color/func/accent-bg-subtle", lightAlias:"purple/100", lightHex:"#F3F4FF", darkAlias:"purple/100", darkHex:"#F3F4FF", usage:"Accent 柔和背景" },
+  ],
+  "Functional — Rise / Drop": [
+    { name:"color/func/rise",   lightAlias:"green/600",  lightHex:"#0F8144", darkAlias:"green/400",  darkHex:"#3BB875", usage:"漲幅/正向趨勢" },
+    { name:"color/func/drop",   lightAlias:"red/600",    lightHex:"#DD1B1B", darkAlias:"red/400",    darkHex:"#F38282", usage:"跌幅/負向趨勢" },
+    { name:"color/func/badge",  lightAlias:"orange/500", lightHex:"#D56C00", darkAlias:"orange/400", darkHex:"#F28815", usage:"用於 Badge" },
+  ],
+};
+
+const SPACING = [
+  { name:"spacing/0",  ios:0,  android:0 },
+  { name:"spacing/2",  ios:2,  android:2 },
+  { name:"spacing/4",  ios:4,  android:4 },
+  { name:"spacing/8",  ios:8,  android:8 },
+  { name:"spacing/12", ios:12, android:12 },
+  { name:"spacing/16", ios:16, android:16 },
+  { name:"spacing/20", ios:20, android:20 },
+  { name:"spacing/24", ios:24, android:24 },
+  { name:"spacing/32", ios:32, android:32 },
+  { name:"spacing/40", ios:40, android:40 },
+  { name:"spacing/48", ios:48, android:48 },
+  { name:"spacing/64", ios:64, android:64 },
+];
+
+const RADIUS = [
+  { name:"radius/0",    ios:0,    android:0 },
+  { name:"radius/4",    ios:4,    android:4 },
+  { name:"radius/6",    ios:6,    android:6 },
+  { name:"radius/12",   ios:12,   android:12 },
+  { name:"radius/16",   ios:16,   android:16 },
+  { name:"radius/full", ios:9999, android:9999 },
+];
+
+const SIZE = [
+  { name:"size/icon/xs",      ios:12, android:12, group:"Icon" },
+  { name:"size/icon/sm",      ios:16, android:16, group:"Icon" },
+  { name:"size/icon/md",      ios:20, android:20, group:"Icon" },
+  { name:"size/icon/base",    ios:24, android:24, group:"Icon" },
+  { name:"size/icon/lg",      ios:28, android:28, group:"Icon" },
+  { name:"size/icon/xl",      ios:32, android:32, group:"Icon" },
+  { name:"size/icon/2xl",     ios:48, android:48, group:"Icon" },
+  { name:"size/avatar/xs",    ios:24, android:24, group:"Avatar" },
+  { name:"size/avatar/sm",    ios:32, android:32, group:"Avatar" },
+  { name:"size/avatar/md",    ios:40, android:40, group:"Avatar" },
+  { name:"size/avatar/lg",    ios:56, android:56, group:"Avatar" },
+  { name:"size/avatar/xl",    ios:80, android:80, group:"Avatar" },
+  { name:"size/avatar/2xl",   ios:120,android:120,group:"Avatar" },
+  { name:"size/button/sm",    ios:32, android:32, group:"Button" },
+  { name:"size/button/md",    ios:40, android:40, group:"Button" },
+  { name:"size/button/lg",    ios:50, android:48, group:"Button" },
+  { name:"size/input/sm",     ios:36, android:40, group:"Input" },
+  { name:"size/input/md",     ios:44, android:48, group:"Input" },
+  { name:"size/input/lg",     ios:52, android:56, group:"Input" },
+  { name:"size/touch/minimum",ios:44, android:48, group:"Touch" },
+];
+
+const TYPO = [
+  { name:"typo/display-lg",  ios:34, android:36, iosLh:41, androidLh:44, iosStyle:"Large Title",  m3:"Display Medium" },
+  { name:"typo/display-md",  ios:28, android:32, iosLh:34, androidLh:40, iosStyle:"Title 1",      m3:"Display Small" },
+  { name:"typo/display-sm",  ios:22, android:28, iosLh:28, androidLh:36, iosStyle:"Title 2",      m3:"Headline Large" },
+  { name:"typo/heading-lg",  ios:20, android:24, iosLh:25, androidLh:32, iosStyle:"Title 3",      m3:"Headline Medium" },
+  { name:"typo/heading-md",  ios:17, android:22, iosLh:22, androidLh:28, iosStyle:"Headline",     m3:"Headline Small" },
+  { name:"typo/heading-sm",  ios:15, android:16, iosLh:20, androidLh:24, iosStyle:"Subheadline",  m3:"Title Medium" },
+  { name:"typo/body-lg",     ios:17, android:16, iosLh:22, androidLh:24, iosStyle:"Body",         m3:"Body Large" },
+  { name:"typo/body-md",     ios:15, android:14, iosLh:20, androidLh:20, iosStyle:"Callout",      m3:"Body Medium" },
+  { name:"typo/body-sm",     ios:13, android:12, iosLh:18, androidLh:16, iosStyle:"Footnote",     m3:"Body Small" },
+  { name:"typo/caption-lg",  ios:12, android:12, iosLh:16, androidLh:16, iosStyle:"Caption 1",    m3:"Label Large" },
+  { name:"typo/caption-md",  ios:11, android:11, iosLh:13, androidLh:16, iosStyle:"Caption 2",    m3:"Label Medium" },
+  { name:"typo/caption-sm",  ios:10, android:10, iosLh:12, androidLh:14, iosStyle:"—",            m3:"Label Small" },
+];
+
+// =============== RENDER ===============
+
+let currentModes = { spacing: "ios", radius: "ios", size: "ios", typo: "ios" };
+
+function buildPalette(el, prefix, data) {
+  el.innerHTML = data.map(s => {
+    const isDark = isColorDark(s.hex);
+    return `<div class="swatch${s.star ? ' star' : ''}" onclick="copyHex('${s.hex}')">
+      <div class="swatch-color" style="background:${s.hex};${s.hex === '#FFFFFF' ? 'border:1px solid #e7e7e7;' : ''}"></div>
+      <div class="swatch-info">
+        <div class="swatch-name">${s.step}</div>
+        <div class="swatch-hex">${s.hex}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function buildTranslucent(el) {
+  el.innerHTML = TRANSLUCENT.map(t => `
+    <div class="trans-card" onclick="copyHex('${t.rgba}')">
+      <div class="trans-preview"><div class="trans-overlay" style="background:${t.rgba};"></div></div>
+      <div class="trans-info">
+        <div class="trans-name">${t.name}</div>
+        <div class="trans-rgba">${t.rgba}</div>
+      </div>
+    </div>`).join('');
+}
+
+let semanticMode = 'light';
+
+function buildSemantic(el) {
+  const isLight = semanticMode === 'light';
+  const panelBg = isLight ? '#ffffff' : '#1a1a1a';
+  const panelText = isLight ? '#000' : '#fff';
+  let html = `<div style="display:flex;align-items:center;gap:8px;margin-bottom:20px;">
+    <span style="font-size:13px;font-weight:600;color:var(--text-secondary)">Mode:</span>
+    <div style="display:flex;background:#f0f0f0;border-radius:8px;padding:2px;gap:2px;">
+      <button onclick="semanticMode='light';buildSemantic(document.getElementById('semantic-tables'))" style="padding:5px 16px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s;background:${isLight?'#fff':'transparent'};color:${isLight?'#000':'#888'};box-shadow:${isLight?'0 1px 3px rgba(0,0,0,0.12)':'none'}">☀️ Light</button>
+      <button onclick="semanticMode='dark';buildSemantic(document.getElementById('semantic-tables'))" style="padding:5px 16px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-weight:500;transition:all 0.15s;background:${!isLight?'#333':'transparent'};color:${!isLight?'#fff':'#888'};box-shadow:${!isLight?'0 1px 3px rgba(0,0,0,0.3)':'none'}">🌙 Dark</button>
+    </div>
+  </div>`;
+
+  for (const [group, tokens] of Object.entries(SEMANTIC)) {
+    html += `<div class="semantic-group">
+      <div class="semantic-group-title">${group}</div>
+      <table class="sem-table">
+        <tr><th>Variable</th><th>Alias</th><th>Hex</th><th>Usage</th></tr>
+        ${tokens.map(t => {
+          const hex = isLight ? t.lightHex : t.darkHex;
+          const alias = isLight ? t.lightAlias : t.darkAlias;
+          const isRgba = hex.startsWith('rgba');
+          const dotStyle = isRgba
+            ? `background:${hex};border:1px solid #e7e7e7;`
+            : `background:${hex};${hex==='#FFFFFF'||hex==='#F5F5F5'?'border:1px solid #e7e7e7;':''}`;
+          return `<tr>
+            <td><span class="var-name">${t.name}</span></td>
+            <td><span class="alias">${alias}</span></td>
+            <td><span class="color-dot" style="${dotStyle}"></span><span class="swatch-hex" style="cursor:pointer;" onclick="copyHex('${hex}')">${hex}</span></td>
+            <td><span class="usage">${t.usage}</span></td>
+          </tr>`;
+        }).join('')}
+      </table>
+    </div>`;
+  }
+  el.innerHTML = html;
+}
+
+function buildScaleGrid(el, data, modeKey, maxVal, color) {
+  const mode = currentModes[modeKey];
+  const otherMode = mode === 'ios' ? 'android' : 'ios';
+  const capMax = Math.min(maxVal, 120);
+  let html = `<div class="scale-row header"><div>Name</div><div>Visual</div><div>iOS</div><div>Android</div></div>`;
+  data.forEach(item => {
+    const val = item[mode];
+    const otherVal = item[otherMode];
+    const displayVal = Math.min(val, capMax);
+    const pct = capMax > 0 ? (displayVal / capMax) * 100 : 0;
+    const diff = item.ios !== item.android;
+    html += `<div class="scale-row">
+      <div class="scale-name">${item.name}</div>
+      <div class="scale-bar-wrap"><div class="scale-bar" style="width:${pct}%;background:${color};${val > capMax ? 'border-right:3px dashed ' + color : ''}"></div></div>
+      <div class="scale-val${diff && mode === 'ios' ? ' scale-diff' : ''}">${item.ios}</div>
+      <div class="scale-val${diff && mode === 'android' ? ' scale-diff' : ''}">${item.android}</div>
+    </div>`;
+  });
+  el.innerHTML = html;
+}
+
+function buildTypoTable(el) {
+  const mode = currentModes.typo;
+  let html = `<tr><th>Variable</th><th>Preview</th><th>Size</th><th>Line Height</th><th>${mode === 'ios' ? 'iOS Style' : 'M3 Type'}</th></tr>`;
+  TYPO.forEach(t => {
+    const size = t[mode];
+    const lh = mode === 'ios' ? t.iosLh : t.androidLh;
+    const styleName = mode === 'ios' ? t.iosStyle : t.m3;
+    html += `<tr>
+      <td><span class="typo-name">${t.name}</span></td>
+      <td><span class="typo-preview" style="font-size:${Math.min(size, 32)}px; line-height:${Math.min(lh, 40)}px;">Aa 中文</span></td>
+      <td class="typo-val">${size}px</td>
+      <td class="typo-val">${lh}px</td>
+      <td class="typo-val" style="text-align:left; font-size:12px; color:#5c5c5c;">${styleName}</td>
+    </tr>`;
+  });
+  el.innerHTML = html;
+}
+
+function renderAll() {
+  buildPalette(document.getElementById('gray-palette'), 'gray', GRAY);
+  buildPalette(document.getElementById('green-palette'), 'green', GREEN);
+  buildPalette(document.getElementById('blue-palette'), 'blue', BLUE);
+  buildPalette(document.getElementById('purple-palette'), 'purple', PURPLE);
+  buildPalette(document.getElementById('red-palette'), 'red', RED);
+  buildPalette(document.getElementById('orange-palette'), 'orange', ORANGE);
+  buildTranslucent(document.getElementById('translucent-grid'));
+  buildSemantic(document.getElementById('semantic-tables'));
+  buildScaleGrid(document.getElementById('spacing-grid'), SPACING, 'spacing', 64, '#0C76B0');
+  buildScaleGrid(document.getElementById('radius-grid'), RADIUS.filter(r => r.ios <= 100), 'radius', 28, '#5E66CC');
+  // Add "full" row manually
+  const radiusGrid = document.getElementById('radius-grid');
+  radiusGrid.innerHTML += `<div class="scale-row"><div class="scale-name">radius/full</div><div class="scale-bar-wrap"><div class="scale-bar" style="width:100%;background:#5E66CC;border-right:3px dashed #5E66CC;"></div></div><div class="scale-val">9999</div><div class="scale-val">9999</div></div>`;
+  buildScaleGrid(document.getElementById('size-grid'), SIZE, 'size', 120, '#0F8144');
+  buildTypoTable(document.getElementById('typo-table'));
+}
+
+// =============== UTILS ===============
+
+function isColorDark(hex) {
+  if (!hex.startsWith('#')) return false;
+  const r = parseInt(hex.slice(1,3), 16), g = parseInt(hex.slice(3,5), 16), b = parseInt(hex.slice(5,7), 16);
+  return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
+}
+
+function copyHex(val) {
+  navigator.clipboard.writeText(val).then(() => {
+    const toast = document.getElementById('toast');
+    toast.textContent = `Copied ${val}`;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 1500);
+  });
+}
+
+// =============== NAV ===============
+
+document.querySelectorAll('[data-nav]').forEach(a => {
+  a.addEventListener('click', () => {
+    document.querySelectorAll('[data-nav]').forEach(n => n.classList.remove('active'));
+    a.classList.add('active');
+  });
+});
+
+// Scroll spy
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('[data-nav]');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 120) current = s.id; });
+  navLinks.forEach(l => {
+    l.classList.remove('active');
+    if (l.getAttribute('href') === '#' + current) l.classList.add('active');
+  });
+});
+
+// =============== MODE TOGGLE ===============
+
+document.querySelectorAll('.mode-toggle').forEach(toggle => {
+  const target = toggle.dataset.target;
+  toggle.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      toggle.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentModes[target] = btn.dataset.mode;
+      renderAll();
+    });
+  });
+});
+
+// =============== INIT ===============
+renderAll();
+</script>
+</body>
+</html>
