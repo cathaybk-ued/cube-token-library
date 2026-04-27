@@ -515,10 +515,6 @@
       <h3>Collection 3 — Spacing</h3>
       <span class="badge">12 variables</span>
     </div>
-    <div class="mode-toggle" data-target="spacing">
-      <button class="active" data-mode="ios">iOS</button>
-      <button data-mode="android">Android</button>
-    </div>
     <div class="scale-grid" id="spacing-grid"></div>
   </section>
 
@@ -528,10 +524,6 @@
       <h3>Collection 4 — Radius</h3>
       <span class="badge">8 variables</span>
     </div>
-    <div class="mode-toggle" data-target="radius">
-      <button class="active" data-mode="ios">iOS</button>
-      <button data-mode="android">Android</button>
-    </div>
     <div class="scale-grid" id="radius-grid"></div>
   </section>
 
@@ -540,10 +532,6 @@
     <div class="section-header">
       <h3>Collection 5 — Size</h3>
       <span class="badge">20 variables</span>
-    </div>
-    <div class="mode-toggle" data-target="size">
-      <button class="active" data-mode="ios">iOS</button>
-      <button data-mode="android">Android</button>
     </div>
     <div class="scale-grid" id="size-grid"></div>
   </section>
@@ -861,21 +849,16 @@ function buildSemantic(el) {
 }
 
 function buildScaleGrid(el, data, modeKey, maxVal, color) {
-  const mode = currentModes[modeKey];
-  const otherMode = mode === 'ios' ? 'android' : 'ios';
   const capMax = Math.min(maxVal, 120);
-  let html = `<div class="scale-row header"><div>Name</div><div>Visual</div><div>iOS</div><div>Android</div></div>`;
+  let html = `<div class="scale-row header"><div>Name</div><div>Visual</div><div>Value</div></div>`;
   data.forEach(item => {
-    const val = item[mode];
-    const otherVal = item[otherMode];
+    const val = item.ios;
     const displayVal = Math.min(val, capMax);
     const pct = capMax > 0 ? (displayVal / capMax) * 100 : 0;
-    const diff = item.ios !== item.android;
     html += `<div class="scale-row">
       <div class="scale-name">${item.name}</div>
       <div class="scale-bar-wrap"><div class="scale-bar" style="width:${pct}%;background:${color};${val > capMax ? 'border-right:3px dashed ' + color : ''}"></div></div>
-      <div class="scale-val${diff && mode === 'ios' ? ' scale-diff' : ''}">${item.ios}</div>
-      <div class="scale-val${diff && mode === 'android' ? ' scale-diff' : ''}">${item.android}</div>
+      <div class="scale-val">${val}</div>
     </div>`;
   });
   el.innerHTML = html;
@@ -912,7 +895,7 @@ function renderAll() {
   buildScaleGrid(document.getElementById('radius-grid'), RADIUS.filter(r => r.ios <= 100), 'radius', 28, '#5E66CC');
   // Add "full" row manually
   const radiusGrid = document.getElementById('radius-grid');
-  radiusGrid.innerHTML += `<div class="scale-row"><div class="scale-name">radius/full</div><div class="scale-bar-wrap"><div class="scale-bar" style="width:100%;background:#5E66CC;border-right:3px dashed #5E66CC;"></div></div><div class="scale-val">9999</div><div class="scale-val">9999</div></div>`;
+  radiusGrid.innerHTML += `<div class="scale-row"><div class="scale-name">radius/full</div><div class="scale-bar-wrap"><div class="scale-bar" style="width:100%;background:#5E66CC;border-right:3px dashed #5E66CC;"></div></div><div class="scale-val">9999</div></div>`;
   buildScaleGrid(document.getElementById('size-grid'), SIZE, 'size', 120, '#0F8144');
   buildTypoTable(document.getElementById('typo-table'));
 }
