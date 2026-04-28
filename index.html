@@ -156,10 +156,10 @@
     color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em;
     border-bottom: 1px solid var(--border); background: #efefef;
   }
-  .sem-table th:nth-child(1) { width: 34%; }
-  .sem-table th:nth-child(2) { width: 18%; }
-  .sem-table th:nth-child(3) { width: 14%; }
-  .sem-table th:nth-child(4) { width: 34%; }
+  .sem-table th:nth-child(1) { width: 30%; }
+  .sem-table th:nth-child(2) { width: 20%; }
+  .sem-table th:nth-child(3) { width: 20%; }
+  .sem-table th:nth-child(4) { width: 30%; }
   .sem-table td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sem-table td:last-child { white-space: normal; text-overflow: clip; overflow: visible; }
   .sem-table td {
@@ -837,7 +837,7 @@ function buildSemantic(el) {
             ? `background:${hex};border:1px solid #e7e7e7;`
             : `background:${hex};${hex==='#FFFFFF'||hex==='#F5F5F5'?'border:1px solid #e7e7e7;':''}`;
           return `<tr>
-            <td><span class="var-name">${t.name}</span></td>
+            <td><span class="var-name" style="cursor:pointer;" onclick="copyHex('${t.name}')">${t.name}</span></td>
             <td><span class="alias">${alias}</span></td>
             <td><span class="color-dot" style="${dotStyle}"></span><span class="swatch-hex" style="cursor:pointer;" onclick="copyHex('${hex}')">${hex}</span></td>
             <td><span class="usage">${t.usage}</span></td>
