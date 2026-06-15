@@ -828,7 +828,7 @@ const SEMANTIC = {
     { name:"color/func/accent",        lightAlias:"purple/700", lightHex:"#4C53AC", darkAlias:"purple/300", darkHex:"#B2B8FF", usage:"Accent 文字/圖示" },
     { name:"color/func/accent-border", lightAlias:"purple/200", lightHex:"#D3D7FF", darkAlias:"purple/900", darkHex:"#2D3169", usage:"Accent 邊框" },
     { name:"color/func/accent-bg",        lightAlias:"purple/150", lightHex:"#E3E6FF", darkAlias:"purple/900", darkHex:"#2D3169", usage:"Accent 背景" },
-    { name:"color/func/accent-bg-subtle", lightAlias:"purple/100", lightHex:"#F3F4FF", darkAlias:"purple/100", darkHex:"#F3F4FF", usage:"Accent 柔和背景" },
+    { name:"color/func/accent-bg-subtle", lightAlias:"purple/100", lightHex:"#F3F4FF", darkAlias:"purple/900", darkHex:"#2D3169", usage:"Accent 柔和背景" },
   ],
   "Functional — Rise / Drop": [
     { name:"color/func/rise",   lightAlias:"green/600",  lightHex:"#0F8144", darkAlias:"green/400",  darkHex:"#3BB875", usage:"漲幅/正向趨勢" },
@@ -863,26 +863,12 @@ const RADIUS = [
 ];
 
 const SIZE = [
-  { name:"size/icon/xs",      ios:12, android:12, group:"Icon" },
-  { name:"size/icon/sm",      ios:16, android:16, group:"Icon" },
-  { name:"size/icon/md",      ios:20, android:20, group:"Icon" },
-  { name:"size/icon/base",    ios:24, android:24, group:"Icon" },
-  { name:"size/icon/lg",      ios:28, android:28, group:"Icon" },
-  { name:"size/icon/xl",      ios:32, android:32, group:"Icon" },
-  { name:"size/icon/2xl",     ios:48, android:48, group:"Icon" },
-  { name:"size/avatar/xs",    ios:24, android:24, group:"Avatar" },
-  { name:"size/avatar/sm",    ios:32, android:32, group:"Avatar" },
-  { name:"size/avatar/md",    ios:40, android:40, group:"Avatar" },
-  { name:"size/avatar/lg",    ios:56, android:56, group:"Avatar" },
-  { name:"size/avatar/xl",    ios:80, android:80, group:"Avatar" },
-  { name:"size/avatar/2xl",   ios:120,android:120,group:"Avatar" },
-  { name:"size/button/sm",    ios:32, android:32, group:"Button" },
-  { name:"size/button/md",    ios:40, android:40, group:"Button" },
-  { name:"size/button/lg",    ios:50, android:48, group:"Button" },
-  { name:"size/input/sm",     ios:36, android:40, group:"Input" },
-  { name:"size/input/md",     ios:44, android:48, group:"Input" },
-  { name:"size/input/lg",     ios:52, android:56, group:"Input" },
-  { name:"size/touch/minimum",ios:44, android:48, group:"Touch" },
+  { name:"size/icon/16", value:16, group:"Icon" },
+  { name:"size/icon/20", value:20, group:"Icon" },
+  { name:"size/icon/24", value:24, group:"Icon" },
+  { name:"size/icon/32", value:32, group:"Icon" },
+  { name:"size/icon/40", value:40, group:"Icon" },
+  { name:"size/icon/48", value:48, group:"Icon" },
 ];
 
 const TYPO_SCALE = [
@@ -927,8 +913,7 @@ function buildSizeShowcase(el) {
 
     items.forEach(item => {
       const shortName = item.name.split('/').pop();
-      const hasDiff = item.ios !== item.android;
-      const v = item.ios;
+      const v = item.value;
 
       let shape;
       if (cfg.shape === 'square') {
@@ -943,9 +928,7 @@ function buildSizeShowcase(el) {
         shape = `<div style="width:${v}px;height:${v}px;background:${cfg.bg};border:1.5px dashed ${cfg.color};border-radius:8px;flex-shrink:0;"></div>`;
       }
 
-      const valHtml = hasDiff
-        ? `<span style="color:${cfg.color};">${v}</span><span style="color:var(--text-muted);">/${item.android}</span>`
-        : `<span style="color:${cfg.color};">${v}</span>`;
+      const valHtml = `<span style="color:${cfg.color};">${v}</span>`;
 
       html += `<div class="size-item">
         ${shape}
