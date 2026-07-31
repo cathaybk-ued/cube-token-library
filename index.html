@@ -177,7 +177,7 @@
   .sem-table .alias { color: var(--text-muted); font-size: 12px; }
   .sem-table .usage { color: var(--text-tertiary); font-size: 12px; }
 
-  /* ---- SCALE VISUALIZER (Spacing / Radius / Size) ---- */
+  /* ---- SCALE VISUALIZER (Spacing / Radius) ---- */
   .scale-grid {
     display: grid; grid-template-columns: 1fr; gap: 0;
     background: var(--surface); border: 1px solid var(--border);
@@ -283,34 +283,6 @@
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* ---- RESPONSIVE ---- */
-  /* ---- SIZE SHOWCASE ---- */
-  .size-showcase {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius-sm); overflow: hidden;
-  }
-  .size-group {
-    padding: 20px 24px 24px;
-    border-bottom: 1px solid var(--border);
-  }
-  .size-group:last-child { border-bottom: none; }
-  .size-group-label {
-    font-size: 12px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.04em; color: var(--text-muted); margin-bottom: 20px;
-  }
-  .size-items-row {
-    display: flex; align-items: flex-end; gap: 16px; flex-wrap: wrap;
-  }
-  .size-item {
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-  }
-  .size-item-label {
-    font-family: monospace; font-weight: 600; font-size: 10px;
-    color: var(--text-secondary); text-align: center; white-space: nowrap;
-  }
-  .size-item-val {
-    font-family: monospace; font-size: 11px; text-align: center;
-  }
-
   /* ---- RADIUS SHOWCASE ---- */
   .radius-showcase {
     display: grid;
@@ -862,15 +834,6 @@ const RADIUS = [
   { name:"radius/full", ios:9999, android:9999, usage:"Radio Button" },
 ];
 
-const SIZE = [
-  { name:"size/icon/16", value:16, group:"Icon" },
-  { name:"size/icon/20", value:20, group:"Icon" },
-  { name:"size/icon/24", value:24, group:"Icon" },
-  { name:"size/icon/32", value:32, group:"Icon" },
-  { name:"size/icon/40", value:40, group:"Icon" },
-  { name:"size/icon/48", value:48, group:"Icon" },
-];
-
 const TYPO_SCALE = [
   { name:'3xl', size:32 },
   { name:'2xl', size:24 },
@@ -887,62 +850,6 @@ const TYPO_GROUPS = [
 ];
 
 // =============== RENDER ===============
-
-function buildSizeShowcase(el) {
-  const groups = {};
-  SIZE.forEach(item => {
-    if (!groups[item.group]) groups[item.group] = [];
-    groups[item.group].push(item);
-  });
-
-  const CFG = {
-    Icon:   { shape:'square', color:'#0F8144', bg:'rgba(15,129,68,0.10)',  desc:'圖示尺寸' },
-    Avatar: { shape:'circle', color:'#0C76B0', bg:'rgba(12,118,176,0.10)', desc:'頭像尺寸' },
-    Button: { shape:'pill',   color:'#5E66CC', bg:'rgba(94,102,204,0.10)', desc:'按鈕高度' },
-    Input:  { shape:'input',  color:'#D56C00', bg:'rgba(213,108,0,0.10)',  desc:'輸入框高度' },
-    Touch:  { shape:'touch',  color:'#BC0000', bg:'rgba(188,0,0,0.10)',   desc:'觸控最小區域' },
-  };
-
-  let html = '<div class="size-showcase">';
-
-  for (const [gName, items] of Object.entries(groups)) {
-    const cfg = CFG[gName] || CFG.Icon;
-    html += `<div class="size-group">
-      <div class="size-group-label">${gName} — ${cfg.desc}</div>
-      <div class="size-items-row">`;
-
-    items.forEach(item => {
-      const shortName = item.name.split('/').pop();
-      const v = item.value;
-
-      let shape;
-      if (cfg.shape === 'square') {
-        shape = `<div style="width:${v}px;height:${v}px;background:${cfg.bg};border:1.5px solid ${cfg.color};border-radius:2px;flex-shrink:0;"></div>`;
-      } else if (cfg.shape === 'circle') {
-        shape = `<div style="width:${v}px;height:${v}px;background:${cfg.bg};border:1.5px solid ${cfg.color};border-radius:50%;flex-shrink:0;"></div>`;
-      } else if (cfg.shape === 'pill') {
-        shape = `<div style="width:72px;height:${v}px;background:${cfg.bg};border:1.5px solid ${cfg.color};border-radius:999px;flex-shrink:0;"></div>`;
-      } else if (cfg.shape === 'input') {
-        shape = `<div style="width:96px;height:${v}px;background:${cfg.bg};border:1.5px solid ${cfg.color};border-radius:6px;flex-shrink:0;"></div>`;
-      } else {
-        shape = `<div style="width:${v}px;height:${v}px;background:${cfg.bg};border:1.5px dashed ${cfg.color};border-radius:8px;flex-shrink:0;"></div>`;
-      }
-
-      const valHtml = `<span style="color:${cfg.color};">${v}</span>`;
-
-      html += `<div class="size-item">
-        ${shape}
-        <div class="size-item-label">${shortName}</div>
-        <div class="size-item-val">${valHtml}</div>
-      </div>`;
-    });
-
-    html += `</div></div>`;
-  }
-
-  html += '</div>';
-  el.innerHTML = html;
-}
 
 function buildRadiusShowcase(el) {
   el.innerHTML = RADIUS.map(item => {
