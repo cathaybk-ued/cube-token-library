@@ -474,7 +474,7 @@
     <div class="stat"><div class="stat-value">184</div><div class="stat-label">Variables</div></div>
     <div class="stat"><div class="stat-value">4</div><div class="stat-label">Platform Modes</div></div>
     <div class="stat"><div class="stat-value">76</div><div class="stat-label">Primitive Colors</div></div>
-    <div class="stat"><div class="stat-value">79</div><div class="stat-label">Semantic Aliases</div></div>
+    <div class="stat"><div class="stat-value">80</div><div class="stat-label">Semantic Aliases</div></div>
   </div>
 
   <div class="arch-diagram">
@@ -581,7 +581,7 @@
   <section class="section" id="semantic">
     <div class="section-header">
       <h3>Collection 2 — Color / Semantic</h3>
-      <span class="badge">79 aliases</span>
+      <span class="badge">80 aliases</span>
     </div>
 
     <div id="semantic-tables"></div>
@@ -753,14 +753,15 @@ const SEMANTIC = {
     { name:"color/divider/indicator",  lightAlias:"gray/200", lightHex:"#D9D9D9", darkAlias:"gray/800",  darkHex:"#494949", usage:"用於小網、Header、Drag 的把手" },
   ],
   "Icon": [
-    { name:"color/icon/indicator-primary",   lightAlias:"gray/900",  lightHex:"#373737", darkAlias:"gray/300",  darkHex:"#BDBDBD", usage:"指示型圖示主要顏色" },
-    { name:"color/icon/indicator-secondary", lightAlias:"green/400", lightHex:"#3BB875", darkAlias:"green/700", darkHex:"#0A6A36", usage:"指示型圖示次要顏色" },
-    { name:"color/icon/action-primary",      lightAlias:"gray/600",  lightHex:"#707070", darkAlias:"gray/500",  darkHex:"#898989", usage:"動作型圖示主要顏色" },
-    { name:"color/icon/action-secondary",    lightAlias:"green/500", lightHex:"#1D9C58", darkAlias:"green/300", darkHex:"#6ED09B", usage:"動作型圖示次要顏色" },
-    { name:"color/icon/action-disable",      lightAlias:"gray/400",  lightHex:"#A3A3A3", darkAlias:"gray/700",  darkHex:"#5C5C5C", usage:"動作型圖示停用狀態" },
-    { name:"color/icon/brand",               lightAlias:"blue/1000", lightHex:"#02293D", darkAlias:"blue/200",  darkHex:"#AAE1FF", usage:"品牌色圖示" },
-    { name:"color/icon/inverse",             lightAlias:"gray/0",    lightHex:"#FFFFFF", darkAlias:"gray/1100", darkHex:"#000000", usage:"深色底上的圖示" },
-    { name:"color/icon/promotional",         lightAlias:"orange/500",lightHex:"#D56C00", darkAlias:"orange/300",darkHex:"#FFAB50", usage:"促銷資訊圖示" },
+    { name:"color/icon/primary",         lightAlias:"gray/900",  lightHex:"#373737", darkAlias:"gray/300",  darkHex:"#BDBDBD", usage:"圖示主要顏色，與內文同級" },
+    { name:"color/icon/primary-pair",    lightAlias:"green/400", lightHex:"#3BB875", darkAlias:"green/700", darkHex:"#0A6A36", usage:"與 primary 搭配的點綴色，用於雙色圖示需被強調的部分" },
+    { name:"color/icon/secondary",       lightAlias:"gray/600",  lightHex:"#707070", darkAlias:"gray/500",  darkHex:"#898989", usage:"圖示次要顏色，工具列/導覽列等配角層級" },
+    { name:"color/icon/action",          lightAlias:"green/500", lightHex:"#1D9C58", darkAlias:"green/300", darkHex:"#6ED09B", usage:"可互動圖示（整體上色）" },
+    { name:"color/icon/brand",           lightAlias:"blue/1000", lightHex:"#02293D", darkAlias:"blue/200",  darkHex:"#AAE1FF", usage:"品牌色圖示" },
+    { name:"color/icon/brand-secondary", lightAlias:"blue/600",  lightHex:"#0C76B0", darkAlias:"blue/400",  darkHex:"#35ADED", usage:"品牌第二色圖示" },
+    { name:"color/icon/inverse",         lightAlias:"gray/0",    lightHex:"#FFFFFF", darkAlias:"gray/1100", darkHex:"#000000", usage:"深色底上的圖示" },
+    { name:"color/icon/disabled",        lightAlias:"gray/400",  lightHex:"#A3A3A3", darkAlias:"gray/700",  darkHex:"#5C5C5C", usage:"圖示停用狀態" },
+    { name:"color/icon/promotional",     lightAlias:"orange/500",lightHex:"#D56C00", darkAlias:"orange/300",darkHex:"#FFAB50", usage:"促銷資訊圖示" },
   ],
   "Functional — Positive (Green)": [
     { name:"color/func/positive",           lightAlias:"green/700", lightHex:"#0A6A36", darkAlias:"green/300", darkHex:"#6ED09B", usage:"正面狀態文字/圖示" },
