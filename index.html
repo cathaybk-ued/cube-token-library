@@ -471,16 +471,16 @@
 
   <div class="stats">
     <div class="stat"><div class="stat-value">6</div><div class="stat-label">Collections</div></div>
-    <div class="stat"><div class="stat-value">184</div><div class="stat-label">Variables</div></div>
+    <div class="stat"><div class="stat-value">201</div><div class="stat-label">Variables</div></div>
     <div class="stat"><div class="stat-value">4</div><div class="stat-label">Platform Modes</div></div>
-    <div class="stat"><div class="stat-value">76</div><div class="stat-label">Primitive Colors</div></div>
-    <div class="stat"><div class="stat-value">80</div><div class="stat-label">Semantic Aliases</div></div>
+    <div class="stat"><div class="stat-value">69</div><div class="stat-label">Primitive Colors</div></div>
+    <div class="stat"><div class="stat-value">78</div><div class="stat-label">Semantic Aliases</div></div>
   </div>
 
   <div class="arch-diagram">
     <div class="arch-box" style="border-color: #0C76B0; background: #E9F6FE;">
       <h4 style="color: #0C76B0;">Semantic Layer</h4>
-      <p>color/bg/primary<br>color/text/secondary<br>color/func/success</p>
+      <p>color/bg/primary<br>color/text/secondary<br>color/func/positive</p>
     </div>
     <div class="arch-arrow">&#8594; alias &#8594;</div>
     <div class="arch-box" style="border-color: #5E66CC; background: #F3F4FF;">
@@ -505,7 +505,7 @@
   <section class="section" id="primitive">
     <div class="section-header">
       <h3>Collection 1 — Color / Primitive</h3>
-      <span class="badge">76 variables</span>
+      <span class="badge">69 variables</span>
     </div>
 
     <!-- Interface -->
@@ -559,11 +559,6 @@
       <div class="palette" id="orange-palette"></div>
     </div>
 
-    <!-- Translucent -->
-    <div class="palette-group">
-      <div class="palette-group-title">Translucent</div>
-      <div class="translucent-grid" id="translucent-grid"></div>
-    </div>
 
     <!-- AI -->
     <div class="palette-group">
@@ -581,7 +576,7 @@
   <section class="section" id="semantic">
     <div class="section-header">
       <h3>Collection 2 — Color / Semantic</h3>
-      <span class="badge">80 aliases</span>
+      <span class="badge">78 aliases</span>
     </div>
 
     <div id="semantic-tables"></div>
@@ -693,123 +688,111 @@ const ORANGE = [
   { step:"900",hex:"#592A00" },{ step:"1000",hex:"#3F1D00" },
 ];
 
-const TRANSLUCENT = [
-  { name:"card",        base:"#FFFFFF", opacity:0.75, label:"Card (Glass)",        rgba:"rgba(255,255,255,0.75)" },
-  { name:"indicator",   base:"#FFFFFF", opacity:0.80, label:"Android Indicator",   rgba:"rgba(255,255,255,0.80)" },
-  { name:"mask",      base:"#000000", opacity:0.50, label:"Mask (Overlay)", rgba:"rgba(0,0,0,0.50)" },
-  { name:"toast",     base:"#000000", opacity:0.75, label:"Toast", rgba:"rgba(0,0,0,0.75)" },
-  { name:"pressed",   base:"#000000", opacity:0.06, label:"Pressed", rgba:"rgba(0,0,0,0.06)" },
-  { name:"at-border", base:"#898989", opacity:0.10, label:"AT Border", rgba:"rgba(137,137,137,0.10)" },
-];
 
 const SEMANTIC = {
   "Background (bg)": [
-    { name:"color/bg/primary",   lightAlias:"gray/0",       lightHex:"#FFFFFF", darkAlias:"gray/1100",    darkHex:"#000000", usage:"頁面主要背景" },
-    { name:"color/bg/secondary", lightAlias:"gray/100",     lightHex:"#F5F5F5", darkAlias:"gray/1000",    darkHex:"#262626", usage:"頁面次要背景" },
-    { name:"color/bg/ai",        lightAlias:"ai/pale-blue", lightHex:"#E6EEF4", darkAlias:"ai/pale-blue", darkHex:"#E6EEF4", usage:"AI 對話相關頁面背景" },
+    { name:"color/bg/primary", lightAlias:"gray/0", lightHex:"#FFFFFF", darkAlias:"gray/1100", darkHex:"#000000", usage:"頁面主要背景。" },
+    { name:"color/bg/secondary", lightAlias:"gray/100", lightHex:"#F5F5F5", darkAlias:"gray/1000", darkHex:"#262626", usage:"頁面次要背景（灰底頁，讓 surface 區塊浮出）。" },
+    { name:"color/bg/media", lightAlias:"gray/1100", lightHex:"#000000", darkAlias:"gray/1100", darkHex:"#000000", usage:"媒體類頁面背景（相機、影像、視訊頁），相機未開啟、圖片未載入時露出的底色。" },
   ],
   "Surface": [
-    { name:"color/surface/brand",           lightAlias:"blue/1000",            lightHex:"#02293D", darkAlias:"blue/100",             darkHex:"#E9F6FE", usage:"品牌色（按鈕）" },
-    { name:"color/surface/primary",         lightAlias:"gray/0",               lightHex:"#FFFFFF", darkAlias:"gray/1100",            darkHex:"#000000", usage:"元件主要底色（Card、Cell 等）" },
-    { name:"color/surface/secondary",       lightAlias:"gray/100",             lightHex:"#F5F5F5", darkAlias:"gray/1000",            darkHex:"#262626", usage:"元件次要底色" },
-    { name:"color/surface/selected",        lightAlias:"green/100",            lightHex:"#E9F8F0", darkAlias:"green/900",            darkHex:"#044020", usage:"選中狀態底色（Selection, Chip 等）" },
-    { name:"color/surface/selected-strong", lightAlias:"green/500",            lightHex:"#1D9C58", darkAlias:"green/700",            darkHex:"#0A6A36", usage:"強選中狀態底色（Tab 等）" },
-    { name:"color/surface/disabled",        lightAlias:"gray/150",             lightHex:"#E7E7E7", darkAlias:"gray/900",             darkHex:"#373737", usage:"停用狀態元件底色（Button）" },
-    { name:"color/surface/disabled-subtle", lightAlias:"gray/100",             lightHex:"#F5F5F5", darkAlias:"gray/1000",            darkHex:"#262626", usage:"停用狀態元件柔和底色（Input, Selection, Chip 等）" },
-    { name:"color/surface/disabled-strong", lightAlias:"gray/400",             lightHex:"#A3A3A3", darkAlias:"gray/700",             darkHex:"#5C5C5C", usage:"用於 Checkbox, Radio Button" },
-    { name:"color/surface/inverse",         lightAlias:"gray/800",             lightHex:"#494949", darkAlias:"gray/300",             darkHex:"#BDBDBD", usage:"深色元件底色（App news 等）" },
-    { name:"color/surface/elevated",        lightAlias:"translucent/white-75", lightHex:"rgba(255,255,255,0.75)", darkAlias:"translucent/white-75", darkHex:"rgba(255,255,255,0.75)", usage:"透明卡片底色" },
-    { name:"color/surface/overlay-light",   lightAlias:"translucent/black-50", lightHex:"rgba(0,0,0,0.50)", darkAlias:"translucent/black-50", darkHex:"rgba(0,0,0,0.50)", usage:"背景遮罩（Mask 等）" },
-    { name:"color/surface/overlay",         lightAlias:"translucent/black-75", lightHex:"rgba(0,0,0,0.75)",         darkAlias:"translucent/black-75", darkHex:"rgba(0,0,0,0.75)",         usage:"半透明深色浮層（Toast 等）" },
-    { name:"color/surface/indicator",       lightAlias:"translucent/white-80", lightHex:"rgba(255,255,255,0.80)", darkAlias:"translucent/white-80", darkHex:"rgba(255,255,255,0.80)", usage:"用於 Android indicator" },
+    { name:"color/surface/brand", lightAlias:"blue/1000", lightHex:"#02293D", darkAlias:"blue/100", darkHex:"#E9F6FE", usage:"品牌色（按鈕）。" },
+    { name:"color/surface/primary", lightAlias:"gray/0", lightHex:"#FFFFFF", darkAlias:"gray/1100", darkHex:"#000000", usage:"元件主要底色（Card、Cell、Sheet、Popup、有底色的 Navbar、Tab bar 等）。" },
+    { name:"color/surface/secondary", lightAlias:"gray/100", lightHex:"#F5F5F5", darkAlias:"gray/1000", darkHex:"#262626", usage:"元件次要底色（灰底 Bar、Tab 等）。" },
+    { name:"color/surface/active", lightAlias:"green/100", lightHex:"#E9F8F0", darkAlias:"green/900", darkHex:"#044020", usage:"選中狀態底色、啟用／active 狀態（Selection、Chip 等）。" },
+    { name:"color/surface/active-strong", lightAlias:"green/500", lightHex:"#1D9C58", darkAlias:"green/700", darkHex:"#0A6A36", usage:"強選中狀態底色、啟用／active 狀態（Tab、Stepper Button 等）。" },
+    { name:"color/surface/disabled", lightAlias:"gray/150", lightHex:"#E7E7E7", darkAlias:"gray/900", darkHex:"#373737", usage:"停用狀態元件底色（Button）。" },
+    { name:"color/surface/disabled-subtle", lightAlias:"gray/100", lightHex:"#F5F5F5", darkAlias:"gray/1000", darkHex:"#262626", usage:"停用狀態元件柔和底色（Input、Selection、Chip 等）。" },
+    { name:"color/surface/disabled-strong", lightAlias:"gray/400", lightHex:"#A3A3A3", darkAlias:"gray/700", darkHex:"#5C5C5C", usage:"停用狀態的 Checkbox、Radio Button 底色。" },
+    { name:"color/surface/inverse", lightAlias:"gray/800", lightHex:"#494949", darkAlias:"gray/300", darkHex:"#BDBDBD", usage:"深色元件底色（App news 等）。" },
+    { name:"color/surface/elevated", lightAlias:"gray/0 75%", lightHex:"rgba(255,255,255,0.75)", darkAlias:"gray/0 75%", darkHex:"rgba(255,255,255,0.75)", usage:"透明卡片底色。" },
+    { name:"color/surface/indicator", lightAlias:"gray/0 80%", lightHex:"rgba(255,255,255,0.80)", darkAlias:"gray/0 80%", darkHex:"rgba(255,255,255,0.80)", usage:"Android indicator 底色。" },
+    { name:"color/surface/overlay-light", lightAlias:"gray/1100 50%", lightHex:"rgba(0,0,0,0.50)", darkAlias:"gray/1100 50%", darkHex:"rgba(0,0,0,0.50)", usage:"背景遮罩（Mask 等）。" },
+    { name:"color/surface/overlay", lightAlias:"gray/1100 75%", lightHex:"rgba(0,0,0,0.75)", darkAlias:"gray/1100 75%", darkHex:"rgba(0,0,0,0.75)", usage:"半透明深色浮層（Toast 等）。" },
+    { name:"color/surface/ai", lightAlias:"ai/pale-blue", lightHex:"#E6EEF4", darkAlias:"ai/pale-blue", darkHex:"#E6EEF4", usage:"AI 對話相關的 Sheet／區塊底色。" },
+    { name:"color/surface/delete", lightAlias:"red/600", lightHex:"#DD1B1B", darkAlias:"red/400", darkHex:"#F38282", usage:"刪除操作的底色（Swipe Action、Close FAB 等）。" },
   ],
   "Text": [
-    { name:"color/text/brand",           lightAlias:"blue/1000", lightHex:"#02293D", darkAlias:"blue/200",  darkHex:"#AAE1FF", usage:"品牌文字色" },
-    { name:"color/text/primary",         lightAlias:"gray/900",  lightHex:"#373737", darkAlias:"gray/300",  darkHex:"#BDBDBD", usage:"標題、主要文字" },
-    { name:"color/text/secondary",       lightAlias:"gray/600",  lightHex:"#707070", darkAlias:"gray/500",  darkHex:"#898989", usage:"副標題、輔助文字" },
-    { name:"color/text/placeholder",     lightAlias:"gray/600",  lightHex:"#707070", darkAlias:"gray/500",  darkHex:"#898989", usage:"輸入類元件未填值時的預設文字（Search bar、Dropdown、Combo Input）" },
-    { name:"color/text/disabled",        lightAlias:"gray/400",  lightHex:"#A3A3A3", darkAlias:"gray/700",  darkHex:"#5C5C5C", usage:"停用狀態下有實質內容的文字：filled value、selected label、button、list item" },
-    { name:"color/text/disabled-subtle", lightAlias:"gray/300",  lightHex:"#BDBDBD", darkAlias:"gray/800",  darkHex:"#494949", usage:"停用狀態下代表空值或未選取的文字：empty placeholder、unselected Selection / Chip" },
-    { name:"color/text/action",           lightAlias:"green/500", lightHex:"#1D9C58", darkAlias:"green/300", darkHex:"#6ED09B", usage:"可點擊連結文字、選中文字" },
-    { name:"color/text/action-inverse",   lightAlias:"green/400", lightHex:"#3BB875", darkAlias:"green/600", darkHex:"#0F8144", usage:"深色底上的可點擊連結文字（inverse action text）" },
-    { name:"color/text/highlight",        lightAlias:"green/700", lightHex:"#0A6A36", darkAlias:"green/300", darkHex:"#6ED09B", usage:"用於重點文字、游標" },
-    { name:"color/text/error",            lightAlias:"red/700",   lightHex:"#BC0000", darkAlias:"red/300",   darkHex:"#F7A9A9", usage:"用於 input error text" },
-    { name:"color/text/inverse",         lightAlias:"gray/0",    lightHex:"#FFFFFF", darkAlias:"gray/1100", darkHex:"#000000", usage:"泛用在深色底上的文字" },
+    { name:"color/text/brand", lightAlias:"blue/1000", lightHex:"#02293D", darkAlias:"blue/200", darkHex:"#AAE1FF", usage:"品牌文字色" },
+    { name:"color/text/primary", lightAlias:"gray/900", lightHex:"#373737", darkAlias:"gray/300", darkHex:"#BDBDBD", usage:"標題、主要文字" },
+    { name:"color/text/secondary", lightAlias:"gray/600", lightHex:"#707070", darkAlias:"gray/500", darkHex:"#898989", usage:"副標題、輔助文字" },
+    { name:"color/text/placeholder", lightAlias:"gray/600", lightHex:"#707070", darkAlias:"gray/500", darkHex:"#898989", usage:"輸入類元件未填值時的預設文字（Search bar、Dropdown、Combo Input）" },
+    { name:"color/text/disabled", lightAlias:"gray/400", lightHex:"#A3A3A3", darkAlias:"gray/700", darkHex:"#5C5C5C", usage:"停用狀態下有實質內容的文字：filled value、selected label、button、list item" },
+    { name:"color/text/disabled-subtle", lightAlias:"gray/300", lightHex:"#BDBDBD", darkAlias:"gray/800", darkHex:"#494949", usage:"停用狀態下代表空值或未選取的文字：empty placeholder、unselected Selection / Chip" },
+    { name:"color/text/action", lightAlias:"green/500", lightHex:"#1D9C58", darkAlias:"green/300", darkHex:"#6ED09B", usage:"可點擊連結文字、選中文字" },
+    { name:"color/text/action-inverse", lightAlias:"green/400", lightHex:"#3BB875", darkAlias:"green/600", darkHex:"#0F8144", usage:"深色底上的可點擊連結文字（inverse action text）" },
+    { name:"color/text/highlight", lightAlias:"green/700", lightHex:"#0A6A36", darkAlias:"green/300", darkHex:"#6ED09B", usage:"用於重點文字、游標" },
+    { name:"color/text/caution", lightAlias:"red/700", lightHex:"#BC0000", darkAlias:"red/300", darkHex:"#F7A9A9", usage:"用於 input error text" },
+    { name:"color/text/attention", lightAlias:"orange/500", lightHex:"#D56C00", darkAlias:"orange/300", darkHex:"#FFAB50", usage:"需要引起注意的文字（促銷、提醒等）" },
+    { name:"color/text/inverse", lightAlias:"gray/0", lightHex:"#FFFFFF", darkAlias:"gray/1100", darkHex:"#000000", usage:"泛用在深色底上的文字" },
   ],
   "Border": [
-    { name:"color/border/default",  lightAlias:"gray/500",               lightHex:"#898989", darkAlias:"gray/600",              darkHex:"#707070", usage:"元件一般狀態預設邊框；App news scroll bar" },
-    { name:"color/border/subtle",   lightAlias:"gray/150",               lightHex:"#E7E7E7", darkAlias:"gray/900",              darkHex:"#373737", usage:"目前用於 CUBE 卡權益預設邊框" },
-    { name:"color/border/disabled", lightAlias:"gray/300",               lightHex:"#BDBDBD", darkAlias:"gray/800",              darkHex:"#494949", usage:"元件停用狀態邊框" },
-    { name:"color/border/focus",    lightAlias:"green/500",              lightHex:"#1D9C58", darkAlias:"green/300",             darkHex:"#6ED09B", usage:"元件選中狀態邊框" },
-    { name:"color/border/error",    lightAlias:"red/500",                lightHex:"#EC5555", darkAlias:"red/300",               darkHex:"#F7A9A9", usage:"元件錯誤狀態邊框" },
-    { name:"color/border/brand",    lightAlias:"blue/1000",              lightHex:"#02293D", darkAlias:"blue/200",              darkHex:"#AAE1FF", usage:"目前用於 CUBE 卡權益選中邊框" },
-    { name:"color/border/at",       lightAlias:"translucent/gray500-10", lightHex:"rgba(137,137,137,0.10)", darkAlias:"translucent/gray500-10", darkHex:"rgba(137,137,137,0.10)", usage:"AT Banner 外框" },
-    { name:"color/border/inverse",  lightAlias:"gray/0",                 lightHex:"#FFFFFF",                darkAlias:"gray/0",                 darkHex:"#FFFFFF",                usage:"泛用在深色底上的邊框" },
+    { name:"color/border/default", lightAlias:"gray/500", lightHex:"#898989", darkAlias:"gray/600", darkHex:"#707070", usage:"元件一般狀態預設邊框；App news scroll bar" },
+    { name:"color/border/subtle", lightAlias:"gray/150", lightHex:"#E7E7E7", darkAlias:"gray/900", darkHex:"#373737", usage:"目前用於 CUBE 卡權益預設邊框" },
+    { name:"color/border/disabled", lightAlias:"gray/300", lightHex:"#BDBDBD", darkAlias:"gray/800", darkHex:"#494949", usage:"元件停用狀態邊框" },
+    { name:"color/border/focus", lightAlias:"green/500", lightHex:"#1D9C58", darkAlias:"green/300", darkHex:"#6ED09B", usage:"元件選中狀態邊框" },
+    { name:"color/border/caution", lightAlias:"red/500", lightHex:"#EC5555", darkAlias:"red/300", darkHex:"#F7A9A9", usage:"元件錯誤狀態邊框" },
+    { name:"color/border/brand", lightAlias:"blue/1000", lightHex:"#02293D", darkAlias:"blue/200", darkHex:"#AAE1FF", usage:"目前用於 CUBE 卡權益選中邊框" },
+    { name:"color/border/at", lightAlias:"gray/500 10%", lightHex:"rgba(137,137,137,0.10)", darkAlias:"gray/500 10%", darkHex:"rgba(137,137,137,0.10)", usage:"AT Banner 外框" },
+    { name:"color/border/inverse", lightAlias:"gray/0", lightHex:"#FFFFFF", darkAlias:"gray/0", darkHex:"#FFFFFF", usage:"泛用在深色底上的邊框" },
   ],
   "Divider": [
-    { name:"color/divider/primary",    lightAlias:"gray/150", lightHex:"#E7E7E7", darkAlias:"gray/900",  darkHex:"#373737", usage:"白底上使用分隔線" },
-    { name:"color/divider/secondary",  lightAlias:"gray/200", lightHex:"#D9D9D9", darkAlias:"gray/800",  darkHex:"#494949", usage:"灰底上使用分隔線" },
-    { name:"color/divider/subtle",     lightAlias:"gray/100", lightHex:"#F5F5F5", darkAlias:"gray/1000", darkHex:"#262626", usage:"清單中使用分隔線" },
-    { name:"color/divider/indicator",  lightAlias:"gray/200", lightHex:"#D9D9D9", darkAlias:"gray/800",  darkHex:"#494949", usage:"用於小網、Header、Drag 的把手" },
+    { name:"color/divider/primary", lightAlias:"gray/150", lightHex:"#E7E7E7", darkAlias:"gray/900", darkHex:"#373737", usage:"白底上使用分隔線" },
+    { name:"color/divider/secondary", lightAlias:"gray/200", lightHex:"#D9D9D9", darkAlias:"gray/800", darkHex:"#494949", usage:"灰底上使用分隔線" },
+    { name:"color/divider/subtle", lightAlias:"gray/100", lightHex:"#F5F5F5", darkAlias:"gray/1000", darkHex:"#262626", usage:"清單中使用分隔線" },
+    { name:"color/divider/indicator", lightAlias:"gray/200", lightHex:"#D9D9D9", darkAlias:"gray/800", darkHex:"#494949", usage:"用於小網、Header、Drag 的把手" },
   ],
   "Icon": [
-    { name:"color/icon/primary",         lightAlias:"gray/900",  lightHex:"#373737", darkAlias:"gray/300",  darkHex:"#BDBDBD", usage:"圖示主要顏色，與內文同級" },
-    { name:"color/icon/primary-pair",    lightAlias:"green/400", lightHex:"#3BB875", darkAlias:"green/700", darkHex:"#0A6A36", usage:"與 primary 搭配的點綴色，用於雙色圖示需被強調的部分" },
-    { name:"color/icon/secondary",       lightAlias:"gray/600",  lightHex:"#707070", darkAlias:"gray/500",  darkHex:"#898989", usage:"圖示次要顏色，工具列/導覽列等配角層級" },
-    { name:"color/icon/action",          lightAlias:"green/500", lightHex:"#1D9C58", darkAlias:"green/300", darkHex:"#6ED09B", usage:"可互動圖示（整體上色）" },
-    { name:"color/icon/brand",           lightAlias:"blue/1000", lightHex:"#02293D", darkAlias:"blue/200",  darkHex:"#AAE1FF", usage:"品牌色圖示" },
-    { name:"color/icon/brand-secondary", lightAlias:"blue/600",  lightHex:"#0C76B0", darkAlias:"blue/400",  darkHex:"#35ADED", usage:"品牌第二色圖示" },
-    { name:"color/icon/inverse",         lightAlias:"gray/0",    lightHex:"#FFFFFF", darkAlias:"gray/1100", darkHex:"#000000", usage:"深色底上的圖示" },
-    { name:"color/icon/disabled",        lightAlias:"gray/400",  lightHex:"#A3A3A3", darkAlias:"gray/700",  darkHex:"#5C5C5C", usage:"圖示停用狀態" },
-    { name:"color/icon/promotional",     lightAlias:"orange/500",lightHex:"#D56C00", darkAlias:"orange/300",darkHex:"#FFAB50", usage:"促銷資訊圖示" },
+    { name:"color/icon/primary", lightAlias:"gray/900", lightHex:"#373737", darkAlias:"gray/300", darkHex:"#BDBDBD", usage:"圖示主要顏色，與內文同級" },
+    { name:"color/icon/primary-pair", lightAlias:"green/400", lightHex:"#3BB875", darkAlias:"green/700", darkHex:"#0A6A36", usage:"與 primary 搭配的點綴色，用於雙色圖示需被強調的部分" },
+    { name:"color/icon/secondary", lightAlias:"gray/600", lightHex:"#707070", darkAlias:"gray/500", darkHex:"#898989", usage:"圖示次要顏色，工具列/導覽列等配角層級" },
+    { name:"color/icon/action", lightAlias:"green/500", lightHex:"#1D9C58", darkAlias:"green/300", darkHex:"#6ED09B", usage:"可互動圖示（整體上色）" },
+    { name:"color/icon/brand", lightAlias:"blue/1000", lightHex:"#02293D", darkAlias:"blue/200", darkHex:"#AAE1FF", usage:"品牌色圖示" },
+    { name:"color/icon/brand-secondary", lightAlias:"blue/600", lightHex:"#0C76B0", darkAlias:"blue/400", darkHex:"#35ADED", usage:"品牌第二色圖示" },
+    { name:"color/icon/inverse", lightAlias:"gray/0", lightHex:"#FFFFFF", darkAlias:"gray/1100", darkHex:"#000000", usage:"深色底上的圖示" },
+    { name:"color/icon/disabled", lightAlias:"gray/400", lightHex:"#A3A3A3", darkAlias:"gray/700", darkHex:"#5C5C5C", usage:"圖示停用狀態" },
+    { name:"color/icon/attention", lightAlias:"orange/500", lightHex:"#D56C00", darkAlias:"orange/300", darkHex:"#FFAB50", usage:"需要引起注意的圖示（促銷、提醒等）" },
   ],
   "Functional — Positive (Green)": [
-    { name:"color/func/positive",           lightAlias:"green/700", lightHex:"#0A6A36", darkAlias:"green/300", darkHex:"#6ED09B", usage:"正面狀態文字/圖示" },
-    { name:"color/func/positive-border",    lightAlias:"green/200", lightHex:"#ADE6C7", darkAlias:"green/900", darkHex:"#044020", usage:"正面狀態邊框" },
-    { name:"color/func/positive-bg",        lightAlias:"green/150", lightHex:"#CBEFDC", darkAlias:"green/900", darkHex:"#044020", usage:"正面狀態背景" },
-    { name:"color/func/positive-bg-subtle", lightAlias:"green/100", lightHex:"#E9F8F0", darkAlias:"green/900", darkHex:"#044020", usage:"正面狀態柔和背景" },
+    { name:"color/func/positive", lightAlias:"green/700", lightHex:"#0A6A36", darkAlias:"green/300", darkHex:"#6ED09B", usage:"正面狀態文字/圖示" },
+    { name:"color/func/positive-border", lightAlias:"green/200", lightHex:"#ADE6C7", darkAlias:"green/900", darkHex:"#044020", usage:"正面狀態邊框" },
+    { name:"color/func/positive-surface", lightAlias:"green/150", lightHex:"#CBEFDC", darkAlias:"green/900", darkHex:"#044020", usage:"正面狀態背景" },
+    { name:"color/func/positive-surface-subtle", lightAlias:"green/100", lightHex:"#E9F8F0", darkAlias:"green/900", darkHex:"#044020", usage:"正面狀態柔和背景" },
   ],
   "Functional — Negative (Red)": [
-    { name:"color/func/negative",           lightAlias:"red/700", lightHex:"#BC0000", darkAlias:"red/300", darkHex:"#F7A9A9", usage:"負面狀態文字/圖示" },
-    { name:"color/func/negative-border",    lightAlias:"red/200", lightHex:"#FACFCF", darkAlias:"red/900", darkHex:"#750000", usage:"負面狀態邊框" },
-    { name:"color/func/negative-bg",        lightAlias:"red/150", lightHex:"#FCE1E1", darkAlias:"red/900", darkHex:"#750000", usage:"負面狀態背景" },
-    { name:"color/func/negative-bg-subtle", lightAlias:"red/100", lightHex:"#FDF2F2", darkAlias:"red/900", darkHex:"#750000", usage:"負面狀態柔和背景" },
+    { name:"color/func/negative", lightAlias:"red/700", lightHex:"#BC0000", darkAlias:"red/300", darkHex:"#F7A9A9", usage:"負面狀態文字/圖示" },
+    { name:"color/func/negative-border", lightAlias:"red/200", lightHex:"#FACFCF", darkAlias:"red/900", darkHex:"#750000", usage:"負面狀態邊框" },
+    { name:"color/func/negative-surface", lightAlias:"red/150", lightHex:"#FCE1E1", darkAlias:"red/900", darkHex:"#750000", usage:"負面狀態背景" },
+    { name:"color/func/negative-surface-subtle", lightAlias:"red/100", lightHex:"#FDF2F2", darkAlias:"red/900", darkHex:"#750000", usage:"負面狀態柔和背景" },
   ],
-  "Functional — Warning (Orange)": [
-    { name:"color/func/warning",           lightAlias:"orange/500", lightHex:"#D56C00", darkAlias:"orange/300", darkHex:"#FFAB50", usage:"警告狀態文字/圖示" },
-    { name:"color/func/warning-border",    lightAlias:"orange/200", lightHex:"#FFD19D", darkAlias:"orange/900", darkHex:"#592A00", usage:"警告狀態邊框" },
-    { name:"color/func/warning-bg",        lightAlias:"orange/150", lightHex:"#FFE2C2", darkAlias:"orange/900", darkHex:"#592A00", usage:"警告狀態背景" },
-    { name:"color/func/warning-bg-subtle", lightAlias:"orange/100", lightHex:"#FFF3E6", darkAlias:"orange/900", darkHex:"#592A00", usage:"警告狀態柔和背景" },
-  ],
-  "Functional — Promotional (Orange)": [
-    { name:"color/func/promotional",           lightAlias:"orange/500", lightHex:"#D56C00", darkAlias:"orange/300", darkHex:"#FFAB50", usage:"促銷資訊/推廣文字" },
-    { name:"color/func/promotional-border",    lightAlias:"orange/200", lightHex:"#FFD19D", darkAlias:"orange/900", darkHex:"#592A00", usage:"促銷資訊邊框" },
-    { name:"color/func/promotional-bg",        lightAlias:"orange/150", lightHex:"#FFE2C2", darkAlias:"orange/900", darkHex:"#592A00", usage:"促銷資訊背景" },
-    { name:"color/func/promotional-bg-subtle", lightAlias:"orange/100", lightHex:"#FFF3E6", darkAlias:"orange/900", darkHex:"#592A00", usage:"促銷資訊柔和背景" },
+  "Functional — Attention (Orange)": [
+    { name:"color/func/attention", lightAlias:"orange/500", lightHex:"#D56C00", darkAlias:"orange/300", darkHex:"#FFAB50", usage:"需要引起注意的文字與圖示（警告、促銷等）" },
+    { name:"color/func/attention-border", lightAlias:"orange/200", lightHex:"#FFD19D", darkAlias:"orange/900", darkHex:"#592A00", usage:"需要引起注意的邊框（Notification 等）" },
+    { name:"color/func/attention-surface", lightAlias:"orange/150", lightHex:"#FFE2C2", darkAlias:"orange/900", darkHex:"#592A00", usage:"需要引起注意的底色（Tag 等）" },
+    { name:"color/func/attention-surface-subtle", lightAlias:"orange/100", lightHex:"#FFF3E6", darkAlias:"orange/900", darkHex:"#592A00", usage:"需要引起注意的柔和底色（Notification 等）" },
+    { name:"color/func/attention-surface-strong", lightAlias:"orange/500", lightHex:"#D56C00", darkAlias:"orange/400", darkHex:"#F28815", usage:"需要引起注意的強調底色（Badge 等）" },
   ],
   "Functional — Neutral (Gray)": [
-    { name:"color/func/neutral",           lightAlias:"gray/700", lightHex:"#5C5C5C", darkAlias:"gray/400", darkHex:"#A3A3A3", usage:"中性狀態文字/圖示" },
-    { name:"color/func/neutral-border",    lightAlias:"gray/200", lightHex:"#D9D9D9", darkAlias:"gray/900", darkHex:"#373737", usage:"中性狀態邊框" },
-    { name:"color/func/neutral-bg",        lightAlias:"gray/150", lightHex:"#E7E7E7", darkAlias:"gray/900", darkHex:"#373737", usage:"中性狀態背景；Controls 背景" },
-    { name:"color/func/neutral-bg-subtle", lightAlias:"gray/100", lightHex:"#F5F5F5", darkAlias:"gray/900", darkHex:"#373737", usage:"中性狀態柔和背景" },
+    { name:"color/func/neutral", lightAlias:"gray/700", lightHex:"#5C5C5C", darkAlias:"gray/400", darkHex:"#A3A3A3", usage:"中性狀態文字/圖示" },
+    { name:"color/func/neutral-border", lightAlias:"gray/200", lightHex:"#D9D9D9", darkAlias:"gray/900", darkHex:"#373737", usage:"中性狀態邊框" },
+    { name:"color/func/neutral-surface", lightAlias:"gray/150", lightHex:"#E7E7E7", darkAlias:"gray/900", darkHex:"#373737", usage:"中性狀態背景；Controls 背景" },
+    { name:"color/func/neutral-surface-subtle", lightAlias:"gray/100", lightHex:"#F5F5F5", darkAlias:"gray/900", darkHex:"#373737", usage:"中性狀態柔和背景" },
   ],
   "Functional — Info (Blue)": [
-    { name:"color/func/info",           lightAlias:"blue/700", lightHex:"#076193", darkAlias:"blue/300", darkHex:"#67C7FB", usage:"資訊文字/圖示" },
-    { name:"color/func/info-border",    lightAlias:"blue/200", lightHex:"#AAE1FF", darkAlias:"blue/900", darkHex:"#033A59", usage:"資訊邊框" },
-    { name:"color/func/info-bg",        lightAlias:"blue/150", lightHex:"#CAECFF", darkAlias:"blue/900", darkHex:"#033A59", usage:"資訊背景" },
-    { name:"color/func/info-bg-subtle", lightAlias:"blue/100", lightHex:"#E9F6FE", darkAlias:"blue/900", darkHex:"#033A59", usage:"資訊柔和背景" },
+    { name:"color/func/info", lightAlias:"blue/700", lightHex:"#076193", darkAlias:"blue/300", darkHex:"#67C7FB", usage:"資訊文字/圖示" },
+    { name:"color/func/info-border", lightAlias:"blue/200", lightHex:"#AAE1FF", darkAlias:"blue/900", darkHex:"#033A59", usage:"資訊邊框" },
+    { name:"color/func/info-surface", lightAlias:"blue/150", lightHex:"#CAECFF", darkAlias:"blue/900", darkHex:"#033A59", usage:"資訊背景" },
+    { name:"color/func/info-surface-subtle", lightAlias:"blue/100", lightHex:"#E9F6FE", darkAlias:"blue/900", darkHex:"#033A59", usage:"資訊柔和背景" },
   ],
   "Functional — Accent (Purple)": [
-    { name:"color/func/accent",        lightAlias:"purple/700", lightHex:"#4C53AC", darkAlias:"purple/300", darkHex:"#B2B8FF", usage:"Accent 文字/圖示" },
+    { name:"color/func/accent", lightAlias:"purple/700", lightHex:"#4C53AC", darkAlias:"purple/300", darkHex:"#B2B8FF", usage:"Accent 文字/圖示" },
     { name:"color/func/accent-border", lightAlias:"purple/200", lightHex:"#D3D7FF", darkAlias:"purple/900", darkHex:"#2D3169", usage:"Accent 邊框" },
-    { name:"color/func/accent-bg",        lightAlias:"purple/150", lightHex:"#E3E6FF", darkAlias:"purple/900", darkHex:"#2D3169", usage:"Accent 背景" },
-    { name:"color/func/accent-bg-subtle", lightAlias:"purple/100", lightHex:"#F3F4FF", darkAlias:"purple/900", darkHex:"#2D3169", usage:"Accent 柔和背景" },
+    { name:"color/func/accent-surface", lightAlias:"purple/150", lightHex:"#E3E6FF", darkAlias:"purple/900", darkHex:"#2D3169", usage:"Accent 背景" },
+    { name:"color/func/accent-surface-subtle", lightAlias:"purple/100", lightHex:"#F3F4FF", darkAlias:"purple/900", darkHex:"#2D3169", usage:"Accent 柔和背景" },
   ],
   "Functional — Rise / Drop": [
-    { name:"color/func/rise",   lightAlias:"red/600",    lightHex:"#DD1B1B", darkAlias:"red/400",    darkHex:"#F38282", usage:"漲幅/正向趨勢" },
-    { name:"color/func/drop",   lightAlias:"green/600",  lightHex:"#0F8144", darkAlias:"green/400",  darkHex:"#3BB875", usage:"跌幅/負向趨勢" },
-    { name:"color/func/badge",  lightAlias:"orange/500", lightHex:"#D56C00", darkAlias:"orange/400", darkHex:"#F28815", usage:"用於 Badge" },
-    { name:"color/func/delete", lightAlias:"red/600",    lightHex:"#DD1B1B", darkAlias:"red/400",    darkHex:"#F38282", usage:"刪除操作文字/圖示" },
+    { name:"color/func/rise", lightAlias:"red/600", lightHex:"#DD1B1B", darkAlias:"red/400", darkHex:"#F38282", usage:"漲幅/正向趨勢" },
+    { name:"color/func/drop", lightAlias:"green/600", lightHex:"#0F8144", darkAlias:"green/400", darkHex:"#3BB875", usage:"跌幅/負向趨勢" },
   ],
 };
 
@@ -922,16 +905,6 @@ function buildPalette(el, prefix, data) {
   }).join('');
 }
 
-function buildTranslucent(el) {
-  el.innerHTML = TRANSLUCENT.map(t => `
-    <div class="trans-card" onclick="copyHex('${t.rgba}')">
-      <div class="trans-preview"><div class="trans-overlay" style="background:${t.rgba};"></div></div>
-      <div class="trans-info">
-        <div class="trans-name">${t.name}</div>
-        <div class="trans-rgba">${t.rgba}</div>
-      </div>
-    </div>`).join('');
-}
 
 let semanticMode = 'light';
 
@@ -1034,7 +1007,6 @@ function renderAll() {
   buildPalette(document.getElementById('purple-palette'), 'purple', PURPLE);
   buildPalette(document.getElementById('red-palette'), 'red', RED);
   buildPalette(document.getElementById('orange-palette'), 'orange', ORANGE);
-  buildTranslucent(document.getElementById('translucent-grid'));
   buildSemantic(document.getElementById('semantic-tables'));
   buildScaleGrid(document.getElementById('spacing-grid'), SPACING, 'spacing', 64, '#0C76B0');
   buildRadiusShowcase(document.getElementById('radius-grid'));
