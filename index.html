@@ -471,10 +471,10 @@
 
   <div class="stats">
     <div class="stat"><div class="stat-value">6</div><div class="stat-label">Collections</div></div>
-    <div class="stat"><div class="stat-value">201</div><div class="stat-label">Variables</div></div>
+    <div class="stat"><div class="stat-value">204</div><div class="stat-label">Variables</div></div>
     <div class="stat"><div class="stat-value">4</div><div class="stat-label">Platform Modes</div></div>
     <div class="stat"><div class="stat-value">69</div><div class="stat-label">Primitive Colors</div></div>
-    <div class="stat"><div class="stat-value">78</div><div class="stat-label">Semantic Aliases</div></div>
+    <div class="stat"><div class="stat-value">81</div><div class="stat-label">Semantic Aliases</div></div>
   </div>
 
   <div class="arch-diagram">
@@ -576,7 +576,7 @@
   <section class="section" id="semantic">
     <div class="section-header">
       <h3>Collection 2 — Color / Semantic</h3>
-      <span class="badge">78 aliases</span>
+      <span class="badge">81 aliases</span>
     </div>
 
     <div id="semantic-tables"></div>
@@ -790,9 +790,12 @@ const SEMANTIC = {
     { name:"color/func/accent-surface", lightAlias:"purple/150", lightHex:"#E3E6FF", darkAlias:"purple/900", darkHex:"#2D3169", usage:"Accent 背景" },
     { name:"color/func/accent-surface-subtle", lightAlias:"purple/100", lightHex:"#F3F4FF", darkAlias:"purple/900", darkHex:"#2D3169", usage:"Accent 柔和背景" },
   ],
-  "Functional — Rise / Drop": [
-    { name:"color/func/rise", lightAlias:"red/600", lightHex:"#DD1B1B", darkAlias:"red/400", darkHex:"#F38282", usage:"漲幅/正向趨勢" },
-    { name:"color/func/drop", lightAlias:"green/600", lightHex:"#0F8144", darkAlias:"green/400", darkHex:"#3BB875", usage:"跌幅/負向趨勢" },
+  "Trend（漲跌趨勢）": [
+    { name:"color/trend/rise-tw", lightAlias:"red/600", lightHex:"#DD1B1B", darkAlias:"red/400", darkHex:"#F38282", usage:"漲幅/正向趨勢/適用台股、日股、港股、陸股" },
+    { name:"color/trend/drop-tw", lightAlias:"green/600", lightHex:"#0F8144", darkAlias:"green/400", darkHex:"#3BB875", usage:"跌幅/負向趨勢/適用台股、日股、港股、陸股" },
+    { name:"color/trend/rise-us", lightAlias:"green/600", lightHex:"#0F8144", darkAlias:"green/400", darkHex:"#3BB875", usage:"漲幅/正向趨勢/適用美股、歐股" },
+    { name:"color/trend/drop-us", lightAlias:"red/600", lightHex:"#DD1B1B", darkAlias:"red/400", darkHex:"#F38282", usage:"跌幅/負向趨勢/適用美股、歐股" },
+    { name:"color/trend/flat", lightAlias:"gray/600", lightHex:"#707070", darkAlias:"gray/400", darkHex:"#A3A3A3", usage:"趨勢持平/不分國家" },
   ],
 };
 
